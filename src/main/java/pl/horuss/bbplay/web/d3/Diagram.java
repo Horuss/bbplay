@@ -1,7 +1,5 @@
 package pl.horuss.bbplay.web.d3;
 
-import java.util.List;
-
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 
@@ -10,8 +8,12 @@ public class Diagram extends AbstractJavaScriptComponent {
 
 	private static final long serialVersionUID = 4053617012919018688L;
 
-	public void setCoords(final List<Integer> coords) {
-		getState().setCoords(coords);
+	public void play(String data, int speed, int delay) {
+		callFunction("play", data, speed, delay);
+	}
+
+	public void reset() {
+		callFunction("reset");
 	}
 
 	@Override

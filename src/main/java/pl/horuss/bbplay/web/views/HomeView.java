@@ -1,15 +1,11 @@
 package pl.horuss.bbplay.web.views;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.vaadin.hezamu.canvas.Canvas;
 import org.vaadin.hezamu.canvas.Canvas.CanvasImageLoadListener;
 import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 import pl.horuss.bbplay.web.Sections;
-import pl.horuss.bbplay.web.d3.Diagram;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -20,7 +16,6 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -39,13 +34,6 @@ public class HomeView extends VerticalLayout implements View {
 	private int currentOpId = -1;
 	private Label compositionName;
 
-	final VerticalLayout layout = new VerticalLayout();
-	final TextField xCoordField = new TextField("X");
-	final TextField yCoordField = new TextField("Y");
-	final Button button = new Button("move circle");
-	final Diagram diagram = new Diagram();
-	final List<Integer> coords = new ArrayList<>();
-
 	public HomeView() {
 		setSpacing(true);
 		setMargin(true);
@@ -59,7 +47,7 @@ public class HomeView extends VerticalLayout implements View {
 		addComponent(body);
 
 		canvas = new Canvas();
-		// addComponent(canvas);
+		addComponent(canvas);
 
 		canvas.setWidth("300px");
 		canvas.setHeight("300px");
@@ -69,7 +57,7 @@ public class HomeView extends VerticalLayout implements View {
 		drawInitialPattern();
 
 		final HorizontalLayout bs = new HorizontalLayout();
-		// addComponent(bs);
+		addComponent(bs);
 		addComponent(compositionName = new Label());
 		setComponentAlignment(compositionName, Alignment.TOP_LEFT);
 
@@ -92,23 +80,6 @@ public class HomeView extends VerticalLayout implements View {
 				bs.addComponent(new Button("Images", event -> drawImages()));
 			}
 		});
-
-		button.addClickListener(event -> {
-			if (xCoordField.isValid() && yCoordField.isValid()) {
-				coords.clear();
-				coords.add(Integer.parseInt(xCoordField.getValue()));
-				coords.add(Integer.parseInt(yCoordField.getValue()));
-				diagram.setCoords(coords);
-			}
-		});
-		// now we build the layout.
-		layout.setSpacing(true);
-		layout.addComponent(xCoordField);
-		layout.addComponent(yCoordField);
-		layout.addComponent(button);
-		layout.addComponent(diagram);
-
-		addComponent(layout);
 
 	}
 
