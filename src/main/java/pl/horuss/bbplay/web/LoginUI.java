@@ -22,7 +22,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 @SpringUI(path = "/login")
-@Theme(ValoTheme.THEME_NAME)
+@Theme("bbplay-theme")
 public class LoginUI extends UI {
 
 	private static final long serialVersionUID = -2647524179548770940L;
@@ -43,7 +43,7 @@ public class LoginUI extends UI {
 
 	@Override
 	protected void init(VaadinRequest request) {
-		getPage().setTitle("Vaadin Shared Security Demo Login");
+		getPage().setTitle("BBPlay");
 
 		FormLayout loginForm = new FormLayout();
 		loginForm.setSizeUndefined();
