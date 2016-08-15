@@ -65,6 +65,10 @@ public class PlaybookView extends VerticalLayout implements View {
 			if (selectedRows != null && !selectedRows.isEmpty()) {
 				diagram.reset();
 				right.setVisible(true);
+				JsonConfig jsonConfig = new JsonConfig();
+				JSONArray jsonNodes = (JSONArray) JSONSerializer.toJSON(((Play) grid
+						.getSelectionModel().getSelectedRows().toArray()[0]).getSteps(), jsonConfig);
+				diagram.init(jsonNodes.toString());
 			} else {
 				right.setVisible(false);
 			}
@@ -75,10 +79,7 @@ public class PlaybookView extends VerticalLayout implements View {
 		main.addComponent(left);
 
 		play.addClickListener(event -> {
-			JsonConfig jsonConfig = new JsonConfig();
-			JSONArray jsonNodes = (JSONArray) JSONSerializer.toJSON(((Play) grid
-					.getSelectionModel().getSelectedRows().toArray()[0]).getSteps(), jsonConfig);
-			diagram.play(jsonNodes.toString(), (int) Math.round(duration.getValue()),
+			diagram.play((int) Math.round(duration.getValue()),
 					(int) Math.round(delay.getValue()));
 		});
 

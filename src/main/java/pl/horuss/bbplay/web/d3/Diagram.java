@@ -7,9 +7,13 @@ import com.vaadin.ui.AbstractJavaScriptComponent;
 public class Diagram extends AbstractJavaScriptComponent {
 
 	private static final long serialVersionUID = 4053617012919018688L;
+	
+	public void init(String data) {
+		callFunction("init", data);
+	}
 
-	public void play(String data, int speed, int delay) {
-		callFunction("play", data, speed, delay);
+	public void play(int speed, int delay) {
+		callFunction("play", speed, delay);
 	}
 
 	public void reset() {
