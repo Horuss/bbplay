@@ -12,20 +12,20 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Notification;
 
 @SpringComponent
-@SideBarItem(sectionId = Sections.OPERATIONS, caption = "Admin operation", order = 1)
+@SideBarItem(sectionId = Sections.OPERATIONS, caption = "Change password", order = 0)
 @FontAwesomeIcon(FontAwesome.WRENCH)
-public class AdminOperation implements Runnable {
+public class ChangePasswordOperation implements Runnable {
 
 	private final SimpleService backend;
 
 	@Autowired
-	public AdminOperation(SimpleService backend) {
+	public ChangePasswordOperation(SimpleService backend) {
 		this.backend = backend;
 	}
 
 	@Override
 	public void run() {
-		Notification.show(backend.adminOnlyEcho("Hello Admin World"));
+		Notification.show(backend.echo("Not working yet"));
 	}
 
 }
