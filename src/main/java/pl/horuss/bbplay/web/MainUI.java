@@ -7,6 +7,7 @@ import org.vaadin.spring.security.util.SecurityExceptionUtils;
 import org.vaadin.spring.sidebar.components.ValoSideBar;
 import org.vaadin.spring.sidebar.security.VaadinSecurityItemFilter;
 
+import pl.horuss.bbplay.web.parts.Footer;
 import pl.horuss.bbplay.web.views.AccessDeniedView;
 import pl.horuss.bbplay.web.views.ErrorView;
 
@@ -23,10 +24,10 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.ui.VerticalLayout;
 
 @SpringUI
-@Theme(ValoTheme.THEME_NAME)
+@Theme("bbplay-theme")
 @Push(transport = Transport.WEBSOCKET)
 @Widgetset("AppWidgetset")
 public class MainUI extends UI {
@@ -60,22 +61,31 @@ public class MainUI extends UI {
 				}
 			}
 		});
-		HorizontalLayout layout = new HorizontalLayout();
+		VerticalLayout layout = new VerticalLayout();
 		layout.setSizeFull();
 
+		HorizontalLayout horizontalLayout = new HorizontalLayout();
+		horizontalLayout.setSizeFull();
+		layout.addComponent(horizontalLayout);
+		layout.setExpandRatio(horizontalLayout, 1f);
+
 		sideBar.setItemFilter(new VaadinSecurityItemFilter(vaadinSecurity));
-		layout.addComponent(sideBar);
+		horizontalLayout.addComponent(sideBar);
 
 		CssLayout viewContainer = new CssLayout();
 		viewContainer.setSizeFull();
-		layout.addComponent(viewContainer);
-		layout.setExpandRatio(viewContainer, 1f);
+		viewContainer.addStyleName("scrollable-y");
+		horizontalLayout.addComponent(viewContainer);
+		horizontalLayout.setExpandRatio(viewContainer, 1f);
 
 		Navigator navigator = new Navigator(this, viewContainer);
 		springViewProvider.setAccessDeniedViewClass(AccessDeniedView.class);
 		navigator.addProvider(springViewProvider);
 		navigator.setErrorView(ErrorView.class);
 		navigator.navigateTo(navigator.getState());
+
+		Footer footer = new Footer();
+		layout.addComponent(footer);
 
 		setContent(layout);
 	}

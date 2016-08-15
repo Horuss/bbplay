@@ -1,0 +1,18 @@
+@import "../valo/valo.scss";
+
+@mixin bbplay-theme {
+  @include valo;
+  
+  .footer {
+  	background-color: #D4D4D4;
+  	padding: 3px;
+  	text-align: center;
+  	font-size: 13px;
+  }
+
+  .v-slot-scrollable-y {
+  	overflow-y: auto;
+  	overflow-x: hidden;
+  }
+  
+}

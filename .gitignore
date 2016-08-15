@@ -5,3 +5,4 @@
 /target/
 /resources/
 /src/main/resources/VAADIN/
+*.cache
