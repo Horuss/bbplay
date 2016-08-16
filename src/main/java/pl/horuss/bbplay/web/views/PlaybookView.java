@@ -25,6 +25,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Slider;
 import com.vaadin.ui.VerticalLayout;
 
@@ -39,42 +40,60 @@ public class PlaybookView extends VerticalLayout implements View {
 	private final PlaybookService playbookService;
 
 	private final Diagram diagram = new Diagram();
-	private Slider delay = new Slider("Delay");
-	private Slider duration = new Slider("Duration");
+	private Slider delay = new Slider("Step delay (s)");
+	private Slider duration = new Slider("Step duration (s)");
 	private Button play = new Button("Play");
 
 	@Autowired
 	public PlaybookView(PlaybookService playbookService) {
 		this.playbookService = playbookService;
+		
+		setSpacing(true);
+		setMargin(true);
 
 		HorizontalLayout main = new HorizontalLayout();
 
 		VerticalLayout left = new VerticalLayout();
+		left.setWidth("250px");
+		left.setMargin(true);
+		left.setSpacing(true);
 
 		VerticalLayout right = new VerticalLayout();
+		right.setMargin(true);
 		right.setVisible(false);
+		
+		VerticalLayout bottom = new VerticalLayout();
+		bottom.setVisible(false);
+		final Label description = new Label();
+		bottom.addComponent(description);
 
 		BeanItemContainer<Play> container = new BeanItemContainer<Play>(Play.class,
 				this.playbookService.getPlays());
 
 		Grid grid = new Grid(container);
-		grid.setColumns("name", "desc");
+		grid.setWidth("100%");
+		grid.setHeight("200px");
+		grid.setColumns("name");
 		grid.setSelectionMode(SelectionMode.SINGLE);
 		grid.addSelectionListener(event -> {
 			Collection<Object> selectedRows = grid.getSelectionModel().getSelectedRows();
 			if (selectedRows != null && !selectedRows.isEmpty()) {
+				Play selectedPlay = (Play) grid.getSelectionModel().getSelectedRows().toArray()[0];
 				diagram.reset();
 				right.setVisible(true);
+				bottom.setVisible(true);
+				description.setValue(selectedPlay.getDesc());
 				JsonConfig jsonConfig = new JsonConfig();
-				JSONArray jsonNodes = (JSONArray) JSONSerializer.toJSON(((Play) grid
-						.getSelectionModel().getSelectedRows().toArray()[0]).getSteps(), jsonConfig);
+				JSONArray jsonNodes = (JSONArray) JSONSerializer.toJSON(selectedPlay.getSteps(), jsonConfig);
 				diagram.init(jsonNodes.toString());
 			} else {
 				right.setVisible(false);
+				bottom.setVisible(false);
 			}
 		});
 
 		left.addComponent(grid);
+		left.addComponent(bottom);
 
 		main.addComponent(left);
 
@@ -94,11 +113,17 @@ public class PlaybookView extends VerticalLayout implements View {
 		duration.setMax(5);
 		duration.setValue(2.0);
 		duration.setResolution(0);
+		
+		HorizontalLayout toolbar = new HorizontalLayout();
+		toolbar.setSpacing(true);
 
-		right.addComponent(delay);
-		right.addComponent(duration);
-		right.addComponent(play);
+		toolbar.addComponent(play);
+		toolbar.addComponent(delay);
+		toolbar.addComponent(duration);
+		
+		right.addComponent(toolbar);
 		right.addComponent(diagram);
+		diagram.addStyleName("diagram");
 
 		main.addComponent(right);
 

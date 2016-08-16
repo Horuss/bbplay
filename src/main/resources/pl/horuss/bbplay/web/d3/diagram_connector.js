@@ -1,7 +1,7 @@
 window.pl_horuss_bbplay_web_d3_Diagram = function() {
 	
 	var diagramFrame = d3.select(this.getElement()).append("svg:svg").attr(
-			"width", 500).attr("height", 500);
+			"width", 536).attr("height", 500);
 	var steps;
 	
 	function drawStep(step) {
@@ -29,6 +29,10 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 	}
 	
 	this.init = function(stepsStr) {
+		diagramFrame.append("svg:image")
+		   .attr('width', 536)
+		   .attr('height', 500)
+		   .attr("xlink:href","img/court1.png")
 		steps = eval(stepsStr);
 		drawStep(steps[0]);
 	},
