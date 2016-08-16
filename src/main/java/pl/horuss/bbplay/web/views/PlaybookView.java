@@ -2,7 +2,7 @@ package pl.horuss.bbplay.web.views;
 
 import java.util.Collection;
 
-import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 import net.sf.json.JsonConfig;
 
@@ -43,6 +43,7 @@ public class PlaybookView extends VerticalLayout implements View {
 	private Slider delay = new Slider("Step delay (s)");
 	private Slider duration = new Slider("Step duration (s)");
 	private Button play = new Button("Play");
+	private Button reset = new Button("Reset");
 
 	@Autowired
 	public PlaybookView(PlaybookService playbookService) {
@@ -79,12 +80,11 @@ public class PlaybookView extends VerticalLayout implements View {
 			Collection<Object> selectedRows = grid.getSelectionModel().getSelectedRows();
 			if (selectedRows != null && !selectedRows.isEmpty()) {
 				Play selectedPlay = (Play) grid.getSelectionModel().getSelectedRows().toArray()[0];
-				diagram.reset();
 				right.setVisible(true);
 				bottom.setVisible(true);
 				description.setValue(selectedPlay.getDesc());
 				JsonConfig jsonConfig = new JsonConfig();
-				JSONArray jsonNodes = (JSONArray) JSONSerializer.toJSON(selectedPlay.getSteps(), jsonConfig);
+				JSONObject jsonNodes = (JSONObject) JSONSerializer.toJSON(selectedPlay, jsonConfig);
 				diagram.init(jsonNodes.toString());
 			} else {
 				right.setVisible(false);
@@ -100,6 +100,10 @@ public class PlaybookView extends VerticalLayout implements View {
 		play.addClickListener(event -> {
 			diagram.play((int) Math.round(duration.getValue()),
 					(int) Math.round(delay.getValue()));
+		});
+		
+		reset.addClickListener(event -> {
+			diagram.reset();
 		});
 
 		delay.setImmediate(true);
@@ -118,6 +122,7 @@ public class PlaybookView extends VerticalLayout implements View {
 		toolbar.setSpacing(true);
 
 		toolbar.addComponent(play);
+		toolbar.addComponent(reset);
 		toolbar.addComponent(delay);
 		toolbar.addComponent(duration);
 		

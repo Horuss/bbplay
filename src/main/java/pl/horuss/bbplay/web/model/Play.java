@@ -7,11 +7,13 @@ public class Play {
 
 	private String name;
 	private String desc;
+	private PlayType type;
 	private List<Step> steps;
 
-	public Play(String name, String desc, List<Step> steps) {
+	public Play(String name, String desc, PlayType type, List<Step> steps) {
 		this.name = name;
 		this.desc = desc;
+		this.type = type;
 		this.steps = steps;
 	}
 
@@ -29,6 +31,14 @@ public class Play {
 
 	public void setDesc(String desc) {
 		this.desc = desc;
+	}
+	
+	public PlayType getType() {
+		return type;
+	}
+
+	public void setType(PlayType type) {
+		this.type = type;
 	}
 
 	public List<Step> getSteps() {
