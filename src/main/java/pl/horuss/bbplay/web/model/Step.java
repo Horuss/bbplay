@@ -6,10 +6,12 @@ import java.util.List;
 public class Step {
 
 	private int order;
+	private String desc;
 	private List<StepEntity> entites;
 
-	public Step(int order, List<StepEntity> entites) {
+	public Step(int order, String desc, List<StepEntity> entites) {
 		this.order = order;
+		this.desc = desc;
 		this.entites = entites;
 	}
 
@@ -19,6 +21,14 @@ public class Step {
 
 	public void setOrder(int order) {
 		this.order = order;
+	}
+	
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
 	}
 
 	public List<StepEntity> getEntites() {

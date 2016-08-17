@@ -39,7 +39,9 @@ public class PlaybookView extends VerticalLayout implements View {
 
 	private final PlaybookService playbookService;
 
-	private final Diagram diagram = new Diagram();
+	//TODO move somewhere \/
+	private final Label stepDesc = new Label();
+	private final Diagram diagram = new Diagram(stepDesc);
 	private Slider delay = new Slider("Step delay (s)");
 	private Slider duration = new Slider("Step duration (s)");
 	private Button play = new Button("Play");
@@ -128,6 +130,7 @@ public class PlaybookView extends VerticalLayout implements View {
 		
 		right.addComponent(toolbar);
 		right.addComponent(diagram);
+		right.addComponent(stepDesc);
 		diagram.addStyleName("diagram");
 
 		main.addComponent(right);

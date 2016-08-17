@@ -1,5 +1,6 @@
 window.pl_horuss_bbplay_web_d3_Diagram = function() {
 	
+	var connector = this;
 	var diagramFrame;
 	var play;
 	
@@ -40,6 +41,11 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 				.text(entity.label)
 			g.attr("x", px(entity.x)).attr("y", py(entity.y))
 		});
+		/*diagramFrame.append("text")
+			.attr("class", "node desc")
+			.attr("x", 100)
+			.attr("y", 400)
+			.text("Step " + step.order + ": " + step.desc)*/
 	}
 	
 	this.init = function(data) {
@@ -54,23 +60,35 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 		   .attr('height', courtSizePx[play.type][1])
 		   .attr("xlink:href","img/court1.png")
 		drawStep(play.steps[0]);
+		connector.updateState(play.steps[0].order, play.steps[0].desc)
 	},
 
 	this.play = function(speed, delay) {
 		diagramFrame.selectAll(".node").remove();
 		drawStep(play.steps[0]);
 		play.steps.forEach(function(step, stepNo) {
-			if (stepNo != 0) step.entites.forEach(function(entity, entityNo) {
-				var selEnt = diagramFrame.select("#se" + entity.id);
-				if (selEnt.empty()) {
-					drawStep(step)
-				} else {
-					selEnt.transition()
-						.delay(delay * 1000)
-						.duration(speed * 1000)
-						.attr("x", px(entity.x)).attr("y", py(entity.y));
-				}
-			});
+			if (stepNo != 0) {
+				step.entites.forEach(function(entity, entityNo) {
+					var selEnt = diagramFrame.select("#se" + entity.id);
+					if (selEnt.empty()) {
+						drawStep(step)
+					} else {
+						selEnt.transition()
+							.delay(delay * 1000 * stepNo + speed * 1000 * (stepNo-1))
+							.duration(speed * 1000)
+							.attr("x", px(entity.x)).attr("y", py(entity.y));
+					}
+				});
+				/*var selDesc = diagramFrame.select(".desc")
+					.attr( "fill-opacity", 1 )
+					.transition()
+					.delay((delay + speed) * 1000 * stepNo)
+					.attr( "fill-opacity", 0 )
+					.transition().delay(0)
+					.attr( "fill-opacity", 1 )
+					.text("Step " + step.order + ": " + step.desc)*/
+			}
+			setTimeout(function() { connector.updateState(step.order, step.desc); }, (delay + speed) * 1000 * stepNo);
 		});
 
 	},
