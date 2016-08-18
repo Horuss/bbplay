@@ -2,6 +2,7 @@ package pl.horuss.bbplay.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.vaadin.jouni.animator.AnimatorProxy;
 import org.vaadin.spring.security.VaadinSecurity;
 import org.vaadin.spring.security.util.SecurityExceptionUtils;
 import org.vaadin.spring.sidebar.components.ValoSideBar;
@@ -33,6 +34,8 @@ import com.vaadin.ui.VerticalLayout;
 public class MainUI extends UI {
 
 	private static final long serialVersionUID = -3538867580654293827L;
+	
+	private static AnimatorProxy animator;
 
 	@Autowired
 	ApplicationContext applicationContext;
@@ -45,6 +48,10 @@ public class MainUI extends UI {
 
 	@Autowired
 	ValoSideBar sideBar;
+	
+	public static AnimatorProxy animator() {
+		return animator;
+	}
 
 	@Override
 	protected void init(VaadinRequest request) {
@@ -86,6 +93,9 @@ public class MainUI extends UI {
 
 		Footer footer = new Footer();
 		layout.addComponent(footer);
+		
+		animator = new AnimatorProxy();
+		layout.addComponent(animator);
 
 		setContent(layout);
 	}

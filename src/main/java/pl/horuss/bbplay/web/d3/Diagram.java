@@ -1,26 +1,35 @@
 package pl.horuss.bbplay.web.d3;
 
-import org.vaadin.jouni.animator.AnimatorProxy;
 import org.vaadin.jouni.animator.shared.AnimType;
+
+import pl.horuss.bbplay.web.MainUI;
+import pl.horuss.bbplay.web.views.PlaybookView;
 
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.ui.AbstractJavaScriptComponent;
-import com.vaadin.ui.Label;
 
 @JavaScript({ "https://d3js.org/d3.v4.min.js", "diagram_connector.js" })
 public class Diagram extends AbstractJavaScriptComponent {
 
 	private static final long serialVersionUID = 4053617012919018688L;
 
-	public Diagram(AnimatorProxy animator, Label stepDesc) {
-		addFunction(
-				"updateState",
-				arguments -> {
-					animator.animate(stepDesc, AnimType.FADE_OUT).setDuration(500).setDelay(100);
-					animator.animate(stepDesc, AnimType.FADE_IN).setDuration(500).setDelay(600);
-					stepDesc.setValue("Step " + +Math.round(arguments.getNumber(0)) + ": "
-							+ arguments.getString(1));
-				});
+	public Diagram(PlaybookView view) {
+		addFunction("updateState", arguments -> {
+			String param = arguments.getString(0);
+			int step = (int) Math.round(arguments.getNumber(1));
+			String desc = arguments.getString(2);
+
+			view.getStepDesc().setValue("Step " + step + ": " + desc);
+
+			if (param.equals("end")) {
+				view.enable();
+			}
+
+			if (step != 1) {
+				MainUI.animator().animate(view.getStepDesc(), AnimType.FADE_IN).setDuration(400);
+			}
+
+		});
 	}
 
 	public void init(String data) {
