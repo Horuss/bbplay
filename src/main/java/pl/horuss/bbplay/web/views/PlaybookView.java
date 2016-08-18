@@ -8,6 +8,7 @@ import net.sf.json.JsonConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.vaadin.jouni.animator.AnimatorProxy;
 import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
@@ -41,7 +42,7 @@ public class PlaybookView extends VerticalLayout implements View {
 
 	//TODO move somewhere \/
 	private final Label stepDesc = new Label();
-	private final Diagram diagram = new Diagram(stepDesc);
+	private final Diagram diagram;
 	private Slider delay = new Slider("Step delay (s)");
 	private Slider duration = new Slider("Step duration (s)");
 	private Button play = new Button("Play");
@@ -50,6 +51,10 @@ public class PlaybookView extends VerticalLayout implements View {
 	@Autowired
 	public PlaybookView(PlaybookService playbookService) {
 		this.playbookService = playbookService;
+		
+		AnimatorProxy animator = new AnimatorProxy();
+		addComponent(animator);
+		diagram = new Diagram(animator, stepDesc);
 		
 		setSpacing(true);
 		setMargin(true);

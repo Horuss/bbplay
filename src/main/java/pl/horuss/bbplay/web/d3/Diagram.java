@@ -1,5 +1,8 @@
 package pl.horuss.bbplay.web.d3;
 
+import org.vaadin.jouni.animator.AnimatorProxy;
+import org.vaadin.jouni.animator.shared.AnimType;
+
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 import com.vaadin.ui.Label;
@@ -9,10 +12,12 @@ public class Diagram extends AbstractJavaScriptComponent {
 
 	private static final long serialVersionUID = 4053617012919018688L;
 
-	public Diagram(Label stepDesc) {
+	public Diagram(AnimatorProxy animator, Label stepDesc) {
 		addFunction(
 				"updateState",
 				arguments -> {
+					animator.animate(stepDesc, AnimType.FADE_OUT).setDuration(500).setDelay(100);
+					animator.animate(stepDesc, AnimType.FADE_IN).setDuration(500).setDelay(600);
 					stepDesc.setValue("Step " + +Math.round(arguments.getNumber(0)) + ": "
 							+ arguments.getString(1));
 				});
