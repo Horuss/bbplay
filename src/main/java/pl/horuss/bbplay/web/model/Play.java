@@ -6,12 +6,14 @@ import java.util.List;
 public class Play {
 
 	private String name;
+	private String call;
 	private String desc;
 	private PlayType type;
 	private List<Step> steps;
 
-	public Play(String name, String desc, PlayType type, List<Step> steps) {
+	public Play(String name, String call, String desc, PlayType type, List<Step> steps) {
 		this.name = name;
+		this.call = call;
 		this.desc = desc;
 		this.type = type;
 		this.steps = steps;
@@ -23,6 +25,14 @@ public class Play {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getCall() {
+		return call;
+	}
+
+	public void setCall(String call) {
+		this.call = call;
 	}
 
 	public String getDesc() {

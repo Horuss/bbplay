@@ -18,7 +18,7 @@ public class PlaybookService {
 		// TODO Stub data
 		return Arrays
 				.asList(new Play(
-						"zagr1",
+						"zagr1", "1",
 						"zagr1-opis Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
 						PlayType.OFFENSE,
 						Arrays.asList(
@@ -40,7 +40,7 @@ public class PlaybookService {
 										Arrays.asList(new StepEntity(1, 300, 300,
 												StepEntityType.PLAYER_1, "L1"), new StepEntity(2,
 												100, 100, StepEntityType.BALL, "B"))))),
-						new Play("zagr2", "zagr2-opis", PlayType.OFFENSE, Arrays.asList(new Step(1,
+						new Play("zagr2", "2", "zagr2-opis", PlayType.OFFENSE, Arrays.asList(new Step(1,
 								"step1-desc", Arrays.asList(new StepEntity(1, 50, 100,
 										StepEntityType.PLAYER_1, "L1"))))));
 	}

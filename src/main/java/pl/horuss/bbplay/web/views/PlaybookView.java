@@ -20,6 +20,7 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
@@ -70,6 +71,8 @@ public class PlaybookView extends VerticalLayout implements View {
 		bottom.setVisible(false);
 		final Label description = new Label();
 		bottom.addComponent(description);
+		bottom.addComponent(new Label("<hr />", ContentMode.HTML));
+		bottom.addComponent(stepDesc);
 
 		BeanItemContainer<Play> container = new BeanItemContainer<Play>(Play.class,
 				this.playbookService.getPlays());
@@ -77,7 +80,7 @@ public class PlaybookView extends VerticalLayout implements View {
 		Grid grid = new Grid(container);
 		grid.setWidth("100%");
 		grid.setHeight("200px");
-		grid.setColumns("name");
+		grid.setColumns("name", "call");
 		grid.setSelectionMode(SelectionMode.SINGLE);
 		grid.addSelectionListener(event -> {
 			Collection<Object> selectedRows = grid.getSelectionModel().getSelectedRows();
@@ -133,7 +136,6 @@ public class PlaybookView extends VerticalLayout implements View {
 		
 		right.addComponent(toolbar);
 		right.addComponent(diagram);
-		right.addComponent(stepDesc);
 		diagram.addStyleName("diagram");
 
 		main.addComponent(right);
