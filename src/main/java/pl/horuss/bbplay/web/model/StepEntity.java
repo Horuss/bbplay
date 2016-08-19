@@ -1,27 +1,46 @@
 package pl.horuss.bbplay.web.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+@Entity
+@IdClass(StepEntityId.class)
 public class StepEntity {
 
-	private int id;
+	@Id
+	@GeneratedValue
+	@Column(name = "se_id")
+	private long id;
+
+	@Id
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "se_st_id")
+	private Step step;
+
+	@Column(name = "se_x")
 	private int x;
+
+	@Column(name = "se_y")
 	private int y;
+
+	@Column(name = "se_type")
 	private StepEntityType type;
+
+	@Column(name = "se_label")
 	private String label;
 
-	public StepEntity(int id, int x, int y, StepEntityType type, String label) {
-		this.id = id;
-		this.x = x;
-		this.y = y;
-		this.type = type;
-		this.label = label;
+	public StepEntity() {
+
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public int getX() {
@@ -39,7 +58,7 @@ public class StepEntity {
 	public void setY(int y) {
 		this.y = y;
 	}
-	
+
 	public StepEntityType getType() {
 		return type;
 	}

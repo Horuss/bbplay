@@ -54,7 +54,7 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 		diagramFrame.append("svg:image")
 		   .attr('width', courtSizePx[play.type][0])
 		   .attr('height', courtSizePx[play.type][1])
-		   .attr("xlink:href","img/court1.png")
+		   .attr("xlink:href","VAADIN/img/court1.png")
 		drawStep(play.steps[0]);
 		connector.updateState("init", play.steps[0].order, play.steps[0].desc)
 	},
