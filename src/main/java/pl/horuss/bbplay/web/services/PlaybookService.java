@@ -16,6 +16,8 @@ public class PlaybookService {
 	@Autowired
 	private PlayDao playDao;
 
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
+	// @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
 	public List<Play> getPlays() {
 		return StreamSupport.stream(playDao.findAll().spliterator(), false).collect(
 				Collectors.toList());
