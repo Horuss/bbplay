@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import pl.horuss.bbplay.web.model.User;
 
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 public class BBPlay {
@@ -22,6 +25,10 @@ public class BBPlay {
 		checkRequiredParameters("db.url", "db.username", "db.password");
 
 		SpringApplication.run(BBPlay.class, args);
+	}
+	
+	public static User currentUser() {
+		return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	}
 
 	@Autowired

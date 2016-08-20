@@ -1,5 +1,8 @@
 package pl.horuss.bbplay.web.config;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +25,8 @@ import org.vaadin.spring.security.shared.VaadinSessionClosingLogoutHandler;
 import org.vaadin.spring.security.shared.VaadinUrlAuthenticationSuccessHandler;
 import org.vaadin.spring.security.web.VaadinRedirectStrategy;
 
+import pl.horuss.bbplay.web.services.UserService;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true, proxyTargetClass = true)
@@ -30,11 +35,21 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	private static final String REMEMBERME_KEY = "bbplays-key";
 
+	@Autowired
+	private DataSource dataSource;
+
+	@Autowired
+	private UserService userService;
+
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		// TODO temporary stub login
-		auth.inMemoryAuthentication().withUser("user").password("user").roles("USER").and()
-				.withUser("admin").password("admin").roles("ADMIN");
+
+		// plain text passwords for now
+		auth.userDetailsService(userService);
+		/* .passwordEncoder(new BCryptPasswordEncoder()) */
+
+		// auth.inMemoryAuthentication().withUser("user").password("user").roles("USER").and()
+		// .withUser("admin").password("admin").roles("ADMIN");
 	}
 
 	@Override

@@ -7,7 +7,6 @@ import net.sf.json.JSONSerializer;
 import net.sf.json.JsonConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
@@ -30,7 +29,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Slider;
 import com.vaadin.ui.VerticalLayout;
 
-@Secured({ "ROLE_USER", "ROLE_ADMIN" })
+// @Secured({ "ROLE_USER", "ROLE_ADMIN" })
 @SpringView(name = "playbook")
 @SideBarItem(sectionId = Sections.VIEWS, caption = "Playbook")
 @FontAwesomeIcon(FontAwesome.ARCHIVE)
@@ -40,7 +39,6 @@ public class PlaybookView extends VerticalLayout implements View {
 
 	private final PlaybookService playbookService;
 
-	//TODO move somewhere \/
 	private final Label stepDesc = new Label();
 	private Slider delay = new Slider("Step delay (s)");
 	private Slider duration = new Slider("Step duration (s)");

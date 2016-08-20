@@ -3,6 +3,7 @@ package pl.horuss.bbplay.web.views;
 import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
+import pl.horuss.bbplay.web.BBPlay;
 import pl.horuss.bbplay.web.Sections;
 
 import com.vaadin.navigator.View;
@@ -31,7 +32,9 @@ public class HomeView extends VerticalLayout implements View {
 		addComponent(header);
 
 		Label body = new Label(
-				"Welcome to BBPlay - Basketball Team Manager!<br/>Please report found bugs and proposed features <a href=\"https://github.com/Horuss/bbplay/issues\" target=\"_blank\">here</a>",
+				"Hello <strong>"
+						+ BBPlay.currentUser().getName()
+						+ "</strong>!<br/>Welcome to BBPlay - Basketball Team Manager!<br/>Please report found bugs and proposed features <a href=\"https://github.com/Horuss/bbplay/issues\" target=\"_blank\">here</a>",
 				ContentMode.HTML);
 		addComponent(body);
 
