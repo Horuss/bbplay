@@ -38,7 +38,9 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 				.attr("class", "label")
 				.attr("stroke-width", "1")
 				.attr("fill", "#000")
-				.style("font-size", '10px')
+				.style("font-size", '15px')
+				.style("font-weight", 'bold')
+				.style("fill", '#555')
 				.text(entity.label)
 			g.attr("x", px(entity.x)).attr("y", py(entity.y))
 		});

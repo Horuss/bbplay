@@ -48,9 +48,9 @@ public class PlaybookView extends VerticalLayout implements View {
 	@Autowired
 	public PlaybookView(PlaybookService playbookService) {
 		this.playbookService = playbookService;
-		
+
 		Diagram diagram = new Diagram(this);
-		
+
 		setSpacing(true);
 		setMargin(true);
 
@@ -64,12 +64,14 @@ public class PlaybookView extends VerticalLayout implements View {
 		VerticalLayout right = new VerticalLayout();
 		right.setMargin(true);
 		right.setVisible(false);
-		
+
 		VerticalLayout bottom = new VerticalLayout();
 		bottom.setVisible(false);
 		final Label description = new Label();
+		description.setContentMode(ContentMode.HTML);
 		bottom.addComponent(description);
 		bottom.addComponent(new Label("<hr />", ContentMode.HTML));
+		stepDesc.setContentMode(ContentMode.HTML);
 		bottom.addComponent(stepDesc);
 
 		BeanItemContainer<Play> container = new BeanItemContainer<Play>(Play.class,
@@ -103,10 +105,9 @@ public class PlaybookView extends VerticalLayout implements View {
 
 		play.addClickListener(event -> {
 			disable();
-			diagram.play((int) Math.round(duration.getValue()),
-					(int) Math.round(delay.getValue()));
+			diagram.play((int) Math.round(duration.getValue()), (int) Math.round(delay.getValue()));
 		});
-		
+
 		reset.addClickListener(event -> {
 			enable();
 			diagram.reset();
@@ -123,7 +124,7 @@ public class PlaybookView extends VerticalLayout implements View {
 		duration.setMax(5);
 		duration.setValue(2.0);
 		duration.setResolution(0);
-		
+
 		HorizontalLayout toolbar = new HorizontalLayout();
 		toolbar.setSpacing(true);
 
@@ -131,7 +132,7 @@ public class PlaybookView extends VerticalLayout implements View {
 		toolbar.addComponent(reset);
 		toolbar.addComponent(delay);
 		toolbar.addComponent(duration);
-		
+
 		right.addComponent(toolbar);
 		right.addComponent(diagram);
 		diagram.addStyleName("diagram");
@@ -150,13 +151,13 @@ public class PlaybookView extends VerticalLayout implements View {
 	public Label getStepDesc() {
 		return stepDesc;
 	}
-	
+
 	public void enable() {
 		play.setEnabled(true);
 		duration.setEnabled(true);
 		delay.setEnabled(true);
 	}
-	
+
 	public void disable() {
 		play.setEnabled(false);
 		duration.setEnabled(false);

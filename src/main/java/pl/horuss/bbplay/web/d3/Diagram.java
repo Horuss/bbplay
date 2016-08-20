@@ -19,14 +19,16 @@ public class Diagram extends AbstractJavaScriptComponent {
 			int step = (int) Math.round(arguments.getNumber(1));
 			String desc = arguments.getString(2);
 
-			view.getStepDesc().setValue("Step " + step + ": " + desc);
-
 			if (param.equals("end")) {
 				view.enable();
 			}
 
-			if (step != 1) {
-				MainUI.animator().animate(view.getStepDesc(), AnimType.FADE_IN).setDuration(400);
+			if (!desc.isEmpty()) {
+				view.getStepDesc().setValue("<strong>Step " + step + ":</strong><br/>" + desc);
+				if (step != 1) {
+					MainUI.animator().animate(view.getStepDesc(), AnimType.FADE_IN)
+							.setDuration(400);
+				}
 			}
 
 		});

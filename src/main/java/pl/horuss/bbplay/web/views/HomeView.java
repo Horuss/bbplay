@@ -34,7 +34,7 @@ public class HomeView extends VerticalLayout implements View {
 		Label body = new Label(
 				"Hello <strong>"
 						+ BBPlay.currentUser().getName()
-						+ "</strong>!<br/>Welcome to BBPlay - Basketball Team Manager!<br/>Please report found bugs and proposed features <a href=\"https://github.com/Horuss/bbplay/issues\" target=\"_blank\">here</a>",
+						+ "</strong>!<br/>Welcome to BBPlay - Basketball Team Manager!<br/>Please report found bugs and proposed features <a href=\"https://github.com/Horuss/bbplay/issues\" target=\"_blank\">here</a>.",
 				ContentMode.HTML);
 		addComponent(body);
 
