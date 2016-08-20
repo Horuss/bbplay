@@ -89,7 +89,6 @@ public class MainUI extends UI {
 		springViewProvider.setAccessDeniedViewClass(AccessDeniedView.class);
 		navigator.addProvider(springViewProvider);
 		navigator.setErrorView(ErrorView.class);
-		navigator.navigateTo(navigator.getState());
 
 		Footer footer = new Footer();
 		layout.addComponent(footer);

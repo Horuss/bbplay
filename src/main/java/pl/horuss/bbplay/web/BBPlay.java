@@ -47,7 +47,7 @@ public class BBPlay {
 	private static void checkRequiredParameters(String... params) {
 		List<String> missingParams = new ArrayList<>();
 		for (String s : params) {
-			if (System.getProperty("db.password") == null) {
+			if (System.getProperty(s) == null) {
 				missingParams.add(s);
 			}
 		}

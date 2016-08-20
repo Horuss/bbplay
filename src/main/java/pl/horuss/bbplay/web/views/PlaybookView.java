@@ -39,11 +39,11 @@ public class PlaybookView extends VerticalLayout implements View {
 
 	private final PlaybookService playbookService;
 
-	private final Label stepDesc = new Label();
-	private Slider delay = new Slider("Step delay (s)");
-	private Slider duration = new Slider("Step duration (s)");
-	private Button play = new Button("Play");
-	private Button reset = new Button("Reset");
+	private Label stepDesc;
+	private Slider delay;
+	private Slider duration;
+	private Button play;
+	private Button reset;
 
 	@Autowired
 	public PlaybookView(PlaybookService playbookService) {
@@ -71,6 +71,7 @@ public class PlaybookView extends VerticalLayout implements View {
 		description.setContentMode(ContentMode.HTML);
 		bottom.addComponent(description);
 		bottom.addComponent(new Label("<hr />", ContentMode.HTML));
+		stepDesc = new Label();
 		stepDesc.setContentMode(ContentMode.HTML);
 		bottom.addComponent(stepDesc);
 
@@ -103,22 +104,28 @@ public class PlaybookView extends VerticalLayout implements View {
 
 		main.addComponent(left);
 
+		play = new Button();
+		play.setIcon(FontAwesome.PLAY);
 		play.addClickListener(event -> {
 			disable();
 			diagram.play((int) Math.round(duration.getValue()), (int) Math.round(delay.getValue()));
 		});
 
+		reset = new Button();
+		reset.setIcon(FontAwesome.STOP);
 		reset.addClickListener(event -> {
 			enable();
 			diagram.reset();
 		});
 
+		delay = new Slider("Step delay (s)");
 		delay.setImmediate(true);
 		delay.setMin(1);
 		delay.setMax(5);
 		delay.setValue(2.0);
 		delay.setResolution(0);
 
+		duration = new Slider("Step duration (s)");
 		duration.setImmediate(true);
 		duration.setMin(1);
 		duration.setMax(5);
