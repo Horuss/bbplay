@@ -32,7 +32,7 @@ import com.vaadin.ui.VerticalLayout;
 // @Secured({ "ROLE_USER", "ROLE_ADMIN" })
 @SpringView(name = "playbook")
 @SideBarItem(sectionId = Sections.VIEWS, caption = "Playbook")
-@FontAwesomeIcon(FontAwesome.ARCHIVE)
+@FontAwesomeIcon(FontAwesome.PLAY_CIRCLE)
 public class PlaybookView extends VerticalLayout implements View {
 
 	private static final long serialVersionUID = -808608026129875870L;
