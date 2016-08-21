@@ -1,5 +1,7 @@
 package pl.horuss.bbplay.web.services;
 
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,15 +28,20 @@ public class UserService implements UserDetailsService {
 		}
 	}
 
-	public boolean changePassword(String currentPassword, String newPassword) {
+	public String changePassword(String currentPassword, String newPassword) {
 		User user = BBPlay.currentUser();
-		if (user.getPassword().equals(currentPassword)) {
-			user.setPassword(newPassword);
-			userDao.save(user);
-			return true;
-		} else {
-			return false;
+		if (!user.getPassword().equals(currentPassword)) {
+			return "Current password invalid";
 		}
+
+		if (!Pattern.compile("((?=.*\\d).{8,})").matcher(newPassword).matches()) {
+			return "Password must be at least 8 characters long and contain digit";
+		}
+
+		user.setPassword(newPassword);
+		userDao.save(user);
+		return null;
+
 	}
 
 }

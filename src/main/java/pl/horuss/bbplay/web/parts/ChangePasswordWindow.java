@@ -47,14 +47,14 @@ public class ChangePasswordWindow extends Window {
 		final FormLayout content = new FormLayout();
 
 		confirmPassword = new PasswordField("Confirm password");
-		// confirmPassword.setImmediate(true);
-		confirmPassword.addValidator(new AbstractStringValidator(
-				"Passwords must be the same and not empty!") {
-			@Override
-			protected boolean isValidValue(String value) {
-				return value.equals(newPassword.getValue());
-			}
-		});
+		confirmPassword.setImmediate(false);
+		confirmPassword
+				.addValidator(new AbstractStringValidator("New passwords must be the same!") {
+					@Override
+					protected boolean isValidValue(String value) {
+						return value.equals(newPassword.getValue());
+					}
+				});
 		content.addComponent(oldPassword = new PasswordField("Current password"));
 		content.addComponent(newPassword = new PasswordField("New password"));
 		content.addComponent(confirmPassword);
@@ -72,11 +72,13 @@ public class ChangePasswordWindow extends Window {
 		ok.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		ok.addClickListener(event -> {
 			if (confirmPassword.isValid()) {
-				if (userService.changePassword(oldPassword.getValue(), newPassword.getValue())) {
+				String changePasswordResult = userService.changePassword(oldPassword.getValue(),
+						newPassword.getValue());
+				if (changePasswordResult == null) {
 					ChangePasswordWindow.this.close();
 					BBPlay.info("Successfully changed!");
 				} else {
-					BBPlay.error("Current password invalid");
+					BBPlay.error(changePasswordResult);
 				}
 			}
 		});
