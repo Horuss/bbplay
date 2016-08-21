@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import pl.horuss.bbplay.web.BBPlay;
 import pl.horuss.bbplay.web.dao.UserDao;
 import pl.horuss.bbplay.web.model.User;
 
@@ -22,6 +23,17 @@ public class UserService implements UserDetailsService {
 			throw new UsernameNotFoundException("No such user: " + username);
 		} else {
 			return user;
+		}
+	}
+
+	public boolean changePassword(String currentPassword, String newPassword) {
+		User user = BBPlay.currentUser();
+		if (user.getPassword().equals(currentPassword)) {
+			user.setPassword(newPassword);
+			userDao.save(user);
+			return true;
+		} else {
+			return false;
 		}
 	}
 

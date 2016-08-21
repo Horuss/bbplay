@@ -17,6 +17,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import pl.horuss.bbplay.web.model.User;
 
+import com.vaadin.server.Page;
+import com.vaadin.shared.Position;
+import com.vaadin.ui.Notification;
+
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 public class BBPlay {
 
@@ -26,9 +30,25 @@ public class BBPlay {
 
 		SpringApplication.run(BBPlay.class, args);
 	}
-	
+
 	public static User currentUser() {
 		return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	}
+
+	public static void info(String description) {
+		Notification notification = new Notification("Info", description,
+				Notification.Type.HUMANIZED_MESSAGE);
+		notification.setPosition(Position.TOP_CENTER);
+		notification.setDelayMsec(2000);
+		notification.show(Page.getCurrent());
+	}
+
+	public static void error(String description) {
+		Notification notification = new Notification("Error", description,
+				Notification.Type.ERROR_MESSAGE);
+		notification.setPosition(Position.TOP_CENTER);
+		notification.setDelayMsec(2000);
+		notification.show(Page.getCurrent());
 	}
 
 	@Autowired
