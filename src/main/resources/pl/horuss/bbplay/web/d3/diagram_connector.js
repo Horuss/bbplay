@@ -42,7 +42,7 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 				.style("font-weight", 'bold')
 				.style("fill", '#555')
 				.text(entity.label)
-			g.attr("x", px(entity.x)).attr("y", py(entity.y))
+			g.attr("x", px(entity.x) - size[entity.type] - 2).attr("y", py(entity.y) - size[entity.type] - 2)
 		});
 	}
 	
@@ -64,8 +64,7 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 	this.draw = function(step) {
 		play.steps[step].entites.forEach(function(entity, entityNo) {
 			var selEnt = diagramFrame.select("#se" + entity.id);
-				selEnt
-					.attr("x", px(entity.x)).attr("y", py(entity.y));
+				selEnt.attr("x", px(entity.x) - size[entity.type] - 2).attr("y", py(entity.y) - size[entity.type] - 2);
 			}
 		);
 		var oper;
@@ -90,7 +89,7 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 						selEnt.transition()
 							.delay(delay * 1000 * stepNo + speed * 1000 * (stepNo-1))
 							.duration(speed * 1000)
-							.attr("x", px(entity.x)).attr("y", py(entity.y));
+							.attr("x", px(entity.x) - size[entity.type] - 2).attr("y", py(entity.y) - size[entity.type] - 2);
 					}
 				});
 			}
