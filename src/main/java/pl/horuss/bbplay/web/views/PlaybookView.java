@@ -39,7 +39,10 @@ public class PlaybookView extends VerticalLayout implements View {
 
 	private final PlaybookService playbookService;
 
+	private Diagram diagram;
 	private Label stepDesc;
+	private Slider stepsSlider;
+	private HorizontalLayout stepsSliderLayout;
 	private Slider delay;
 	private Slider duration;
 	private Button play;
@@ -48,8 +51,6 @@ public class PlaybookView extends VerticalLayout implements View {
 	@Autowired
 	public PlaybookView(PlaybookService playbookService) {
 		this.playbookService = playbookService;
-
-		Diagram diagram = new Diagram(this);
 
 		setSpacing(true);
 		setMargin(true);
@@ -71,6 +72,29 @@ public class PlaybookView extends VerticalLayout implements View {
 		description.setContentMode(ContentMode.HTML);
 		bottom.addComponent(description);
 		bottom.addComponent(new Label("<hr />", ContentMode.HTML));
+		stepsSliderLayout = new HorizontalLayout();
+		stepsSliderLayout.setSpacing(true);
+		stepsSlider = new Slider();
+		stepsSlider.setMin(1);
+		stepsSlider.setMax(1);
+		stepsSlider.setValue(1.0);
+		stepsSlider.setResolution(0);
+		stepsSlider.setWidth("100%");
+		stepsSlider.addValueChangeListener(event -> {
+			diagram.draw(((Double) stepsSlider.getValue()).intValue() - 1);
+		});
+		Button prevStep = new Button(FontAwesome.ARROW_LEFT);
+		prevStep.addClickListener(event -> {
+			stepsSlider.setValue(stepsSlider.getValue() - 1);
+		});
+		Button nextStep = new Button(FontAwesome.ARROW_RIGHT);
+		nextStep.addClickListener(event -> {
+			stepsSlider.setValue(stepsSlider.getValue() + 1);
+		});
+		stepsSliderLayout.addComponent(prevStep);
+		stepsSliderLayout.addComponent(stepsSlider);
+		stepsSliderLayout.addComponent(nextStep);
+		bottom.addComponent(stepsSliderLayout);
 		stepDesc = new Label();
 		stepDesc.setContentMode(ContentMode.HTML);
 		bottom.addComponent(stepDesc);
@@ -90,6 +114,7 @@ public class PlaybookView extends VerticalLayout implements View {
 				right.setVisible(true);
 				bottom.setVisible(true);
 				description.setValue(selectedPlay.getDesc());
+				stepsSlider.setMax(selectedPlay.getSteps().size());
 				JsonConfig jsonConfig = new JsonConfig();
 				JSONObject jsonNodes = (JSONObject) JSONSerializer.toJSON(selectedPlay, jsonConfig);
 				diagram.init(jsonNodes.toString());
@@ -141,8 +166,9 @@ public class PlaybookView extends VerticalLayout implements View {
 		toolbar.addComponent(duration);
 
 		right.addComponent(toolbar);
-		right.addComponent(diagram);
+		diagram = new Diagram(this);
 		diagram.addStyleName("diagram");
+		right.addComponent(diagram);
 
 		main.addComponent(right);
 
@@ -159,16 +185,22 @@ public class PlaybookView extends VerticalLayout implements View {
 		return stepDesc;
 	}
 
+	public Slider getStepsSlider() {
+		return stepsSlider;
+	}
+
 	public void enable() {
 		play.setEnabled(true);
 		duration.setEnabled(true);
 		delay.setEnabled(true);
+		stepsSliderLayout.setEnabled(true);
 	}
 
 	public void disable() {
 		play.setEnabled(false);
 		duration.setEnabled(false);
 		delay.setEnabled(false);
+		stepsSliderLayout.setEnabled(false);
 	}
 
 }

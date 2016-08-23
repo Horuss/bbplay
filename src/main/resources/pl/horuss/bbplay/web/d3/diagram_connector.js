@@ -60,6 +60,22 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 		drawStep(play.steps[0]);
 		connector.updateState("init", play.steps[0].order, play.steps[0].desc)
 	},
+	
+	this.draw = function(step) {
+		play.steps[step].entites.forEach(function(entity, entityNo) {
+			var selEnt = diagramFrame.select("#se" + entity.id);
+				selEnt
+					.attr("x", px(entity.x)).attr("y", py(entity.y));
+			}
+		);
+		var oper;
+		if (play.steps.length == step) {
+			oper= "end";
+		} else { 
+			oper= "step"
+		}
+		connector.updateState(oper, play.steps[step].order, play.steps[step].desc);
+	},
 
 	this.play = function(speed, delay) {
 		diagramFrame.selectAll(".node").remove();

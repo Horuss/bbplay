@@ -23,19 +23,20 @@ public class Diagram extends AbstractJavaScriptComponent {
 				view.enable();
 			}
 
-			if (!desc.isEmpty()) {
-				view.getStepDesc().setValue("<strong>Step " + step + ":</strong><br/>" + desc);
-				if (step != 1) {
-					MainUI.animator().animate(view.getStepDesc(), AnimType.FADE_IN)
-							.setDuration(400);
-				}
-			}
+			view.getStepDesc().setValue("<strong>Step " + step + ":</strong><br/>" + desc);
+			MainUI.animator().animate(view.getStepDesc(), AnimType.FADE_IN).setDuration(400);
+			view.getStepsSlider().setValue((double) step);
 
 		});
+
 	}
 
 	public void init(String data) {
 		callFunction("init", data);
+	}
+
+	public void draw(int step) {
+		callFunction("draw", step);
 	}
 
 	public void play(int speed, int delay) {
