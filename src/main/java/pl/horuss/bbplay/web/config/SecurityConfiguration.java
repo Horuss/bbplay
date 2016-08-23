@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
@@ -44,9 +46,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-		// plain text passwords for now
-		auth.userDetailsService(userService);
-		/* .passwordEncoder(new BCryptPasswordEncoder()) */
+		auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
 
 		// auth.inMemoryAuthentication().withUser("user").password("user").roles("USER").and()
 		// .withUser("admin").password("admin").roles("ADMIN");
@@ -108,6 +108,19 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	VaadinAuthenticationSuccessHandler vaadinAuthenticationSuccessHandler(HttpService httpService,
 			VaadinRedirectStrategy vaadinRedirectStrategy) {
 		return new VaadinUrlAuthenticationSuccessHandler(httpService, vaadinRedirectStrategy, "/");
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		PasswordEncoder encoder = new BCryptPasswordEncoder();
+		return encoder;
+	}
+	
+	// util for manually generating passwords
+	public static void main(String[] args) {
+		String password = "someNewPassword";
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		System.out.println(passwordEncoder.encode(password));
 	}
 
 }

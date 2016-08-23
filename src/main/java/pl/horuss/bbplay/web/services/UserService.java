@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import pl.horuss.bbplay.web.BBPlay;
@@ -17,6 +18,9 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -30,7 +34,7 @@ public class UserService implements UserDetailsService {
 
 	public String changePassword(String currentPassword, String newPassword) {
 		User user = BBPlay.currentUser();
-		if (!user.getPassword().equals(currentPassword)) {
+		if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
 			return "Current password invalid";
 		}
 
@@ -38,7 +42,7 @@ public class UserService implements UserDetailsService {
 			return "Password must be at least 8 characters long and contain digit";
 		}
 
-		user.setPassword(newPassword);
+		user.setPassword(passwordEncoder.encode(newPassword));
 		userDao.save(user);
 		return null;
 
