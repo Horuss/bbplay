@@ -85,11 +85,17 @@ public class PlaybookView extends VerticalLayout implements View {
 		});
 		Button prevStep = new Button(FontAwesome.ARROW_LEFT);
 		prevStep.addClickListener(event -> {
-			stepsSlider.setValue(stepsSlider.getValue() - 1);
+			if (((Double) stepsSlider.getValue()).intValue() != ((Double) stepsSlider.getMin())
+					.intValue()) {
+				stepsSlider.setValue(stepsSlider.getValue() - 1);
+			}
 		});
 		Button nextStep = new Button(FontAwesome.ARROW_RIGHT);
 		nextStep.addClickListener(event -> {
-			stepsSlider.setValue(stepsSlider.getValue() + 1);
+			if (((Double) stepsSlider.getValue()).intValue() != ((Double) stepsSlider.getMax())
+					.intValue()) {
+				stepsSlider.setValue(stepsSlider.getValue() + 1);
+			}
 		});
 		stepsSliderLayout.addComponent(prevStep);
 		stepsSliderLayout.addComponent(stepsSlider);

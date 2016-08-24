@@ -5,7 +5,7 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 	var play;
 	var scheduledEvents = [];
 	
-	var courtSizePx = {"OFFENSE" : [536, 500]}
+	var courtSizePx = {"OFFENSE" : [536, 500], "DEFENSE" : [536, 500]}
 	
 	var colorFill = {"BALL" : "#FF8133", "PLAYER_1" : "#7DFF6B", "PLAYER_2" : "#8C80FF"};
 	var colorStroke = {"BALL" : "#FF6200", "PLAYER_1" : "#1EFF00", "PLAYER_2" : "#1900FF"};
@@ -16,7 +16,11 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 	}
 	
 	function py(coordCm) {
-		return courtSizePx[play.type][1] * coordCm / 1400
+		if (play.type == "OFFENSE") {
+			return courtSizePx[play.type][1] * coordCm / 1400
+		} else if (play.type == "DEFENSE") {
+			return courtSizePx[play.type][1] - courtSizePx[play.type][1] * coordCm / 1400
+		}
 	}
 	
 	function drawStep(step) {
@@ -53,10 +57,16 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 			.attr("width", courtSizePx[play.type][0])
 			.attr("height", courtSizePx[play.type][1])
 		diagramFrame.selectAll("*").remove();
-		diagramFrame.append("svg:image")
+		var court = diagramFrame.append("svg:image")
 		   .attr('width', courtSizePx[play.type][0])
-		   .attr('height', courtSizePx[play.type][1])
-		   .attr("xlink:href","VAADIN/img/court1.png")
+		   .attr('height', courtSizePx[play.type][1]);
+		if (play.type == "OFFENSE") {
+			court.attr("xlink:href","VAADIN/img/court1.png")
+		} else if (play.type == "DEFENSE") {
+			court.attr("xlink:href","VAADIN/img/court1.png")
+				.attr('transform', 'rotate(180 '+courtSizePx[play.type][0]/2+' '+courtSizePx[play.type][1]/2+')');
+		}
+		   
 		drawStep(play.steps[0]);
 		connector.updateState("init", play.steps[0].order, play.steps[0].desc)
 	},
