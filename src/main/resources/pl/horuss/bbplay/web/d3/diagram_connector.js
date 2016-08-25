@@ -5,22 +5,27 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 	var play;
 	var scheduledEvents = [];
 	
-	var courtSizePx = {"OFFENSE" : [536, 500], "DEFENSE" : [536, 500]}
+	var courtSizePx = {"OFFENSE" : [536, 500], "DEFENSE" : [536, 500],
+			"FULL_COURT" : [268, 500] }
 	
 	var colorFill = {"BALL" : "#FF8133", "PLAYER_1" : "#7DFF6B", "PLAYER_2" : "#8C80FF"};
 	var colorStroke = {"BALL" : "#FF6200", "PLAYER_1" : "#1EFF00", "PLAYER_2" : "#1900FF"};
 	var size = {"BALL" : 10, "PLAYER_1" : 14, "PLAYER_2" : 14};
 	
 	function px(coordCm) {
-		return courtSizePx[play.type][0] * coordCm / 1500
+		var sizeOfCourt = 1500;
+		if (play.type == "FULL_COURT") {
+			sizeOfCourt *= 2
+		}
+		return courtSizePx[play.type][0] * coordCm / sizeOfCourt
 	}
 	
 	function py(coordCm) {
-		if (play.type == "OFFENSE") {
-			return courtSizePx[play.type][1] * coordCm / 1400
-		} else if (play.type == "DEFENSE") {
-			return courtSizePx[play.type][1] - courtSizePx[play.type][1] * coordCm / 1400
+		var sizeOfCourt = 1400;
+		if (play.type == "FULL_COURT") {
+			sizeOfCourt *= 2
 		}
+		return courtSizePx[play.type][1] * coordCm / sizeOfCourt
 	}
 	
 	function drawStep(step) {
@@ -57,14 +62,36 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 			.attr("width", courtSizePx[play.type][0])
 			.attr("height", courtSizePx[play.type][1])
 		diagramFrame.selectAll("*").remove();
-		var court = diagramFrame.append("svg:image")
-		   .attr('width', courtSizePx[play.type][0])
-		   .attr('height', courtSizePx[play.type][1]);
 		if (play.type == "OFFENSE") {
-			court.attr("xlink:href","VAADIN/img/court1.png")
+			diagramFrame.append("svg:image")
+			   .attr('width', courtSizePx[play.type][0])
+			   .attr('height', courtSizePx[play.type][1])
+			   .attr("xlink:href","VAADIN/img/court1.png")
 		} else if (play.type == "DEFENSE") {
-			court.attr("xlink:href","VAADIN/img/court1.png")
-				.attr('transform', 'rotate(180 '+courtSizePx[play.type][0]/2+' '+courtSizePx[play.type][1]/2+')');
+			diagramFrame.append("svg:image")
+			   .attr('width', courtSizePx[play.type][0])
+			   .attr('height', courtSizePx[play.type][1])
+			   .attr("xlink:href","VAADIN/img/court1.png")
+			   .attr('y', -courtSizePx[play.type][1])
+			   .attr('transform', 'scale(1,-1)')
+		} else if (play.type == "FULL_COURT") {
+			diagramFrame.append("svg:image")
+			   .attr('width', courtSizePx[play.type][0])
+			   .attr('height', courtSizePx[play.type][1] / 2)
+			   .attr("xlink:href","VAADIN/img/court1.png")
+			diagramFrame.append("svg:image")
+			   .attr('width', courtSizePx[play.type][0])
+			   .attr('height', courtSizePx[play.type][1] / 2)
+			   .attr('y', -courtSizePx[play.type][1])
+			   .attr('transform', 'scale(1,-1)')
+			   .attr("xlink:href","VAADIN/img/court1.png");
+			diagramFrame.append("line")
+				.attr("x1", 0)
+				.attr("y1", courtSizePx[play.type][1] / 2)
+				.attr("x2", courtSizePx[play.type][0])
+				.attr("y2", courtSizePx[play.type][1] / 2)
+				.attr("stroke-width", 2)
+				.attr("stroke", "black");
 		}
 		   
 		drawStep(play.steps[0]);
