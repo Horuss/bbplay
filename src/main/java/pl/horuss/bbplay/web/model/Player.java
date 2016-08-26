@@ -38,8 +38,17 @@ public class Player {
 	@Column(name = "pla_pos2")
 	private String position2;
 
-	public Player() {
+	@Column(name = "pla_comment")
+	private String comment;
 
+	public Player() {
+		this.firstName = "";
+		this.lastName = "";
+		this.position = "";
+		this.position2 = "";
+		this.role = "";
+		this.comment = "";
+		this.number = 0;
 	}
 
 	public long getId() {
@@ -104,6 +113,14 @@ public class Player {
 
 	public void setPosition2(String position2) {
 		this.position2 = position2;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 }

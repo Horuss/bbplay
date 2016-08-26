@@ -33,10 +33,8 @@ public class ChangePasswordWindow extends Window {
 		setModal(true);
 		setClosable(true);
 		setResizable(false);
-		setIcon(FontAwesome.WRENCH);
 		addCloseShortcut(KeyCode.ESCAPE);
 		setContent(windowContent());
-
 	}
 
 	@SuppressWarnings("serial")

@@ -6,7 +6,10 @@ import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 import pl.horuss.bbplay.web.Sections;
 import pl.horuss.bbplay.web.model.Player;
+import pl.horuss.bbplay.web.parts.ConfirmWindow;
+import pl.horuss.bbplay.web.parts.EditPlayerWindow;
 import pl.horuss.bbplay.web.services.PlayerService;
+import pl.horuss.bbplay.web.utils.SecurityUtil;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.BeanItemContainer;
@@ -16,15 +19,19 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Grid.DetailsGenerator;
 import com.vaadin.ui.Grid.RowReference;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ButtonRenderer;
+import com.vaadin.ui.themes.ValoTheme;
 
 @SpringView(name = "team")
 @SideBarItem(sectionId = Sections.VIEWS, caption = "Team", order = 1)
@@ -35,6 +42,9 @@ public class TeamView extends VerticalLayout implements View {
 
 	private final PlayerService playerService;
 
+	private Grid grid;
+
+	@SuppressWarnings("serial")
 	@Autowired
 	public TeamView(PlayerService playerService) {
 		this.playerService = playerService;
@@ -48,15 +58,22 @@ public class TeamView extends VerticalLayout implements View {
 		GeneratedPropertyContainer wrapperContainer = new GeneratedPropertyContainer(container);
 		wrapperContainer.removeContainerProperty("id");
 		wrapperContainer.removeContainerProperty("user");
+		wrapperContainer.removeContainerProperty("comment");
 
-		Grid grid = new Grid();
+		grid = new Grid();
 		grid.setContainerDataSource(wrapperContainer);
 		grid.setWidth("100%");
 		grid.setHeight("100%");
 		grid.setSelectionMode(SelectionMode.SINGLE);
 
+		grid.addItemClickListener(event -> {
+			if (event.isDoubleClick()) {
+				Object itemId = event.getItemId();
+				grid.setDetailsVisible(itemId, !grid.isDetailsVisible(itemId));
+			}
+		});
+
 		wrapperContainer.addGeneratedProperty("expander", new PropertyValueGenerator<String>() {
-			private static final long serialVersionUID = 2083588858764879470L;
 
 			@Override
 			public String getValue(Item item, Object itemId, Object propertyId) {
@@ -93,17 +110,44 @@ public class TeamView extends VerticalLayout implements View {
 		column.setWidth(125);
 
 		grid.setDetailsGenerator(new DetailsGenerator() {
-			private static final long serialVersionUID = -4798398969385281616L;
-
 			@Override
 			public Component getDetails(RowReference rowReference) {
 				final Player bean = (Player) rowReference.getItemId();
 				// TODO fill with interesting data...
-				Label label = new Label("Extra data for " + bean.getFirstName());
 				VerticalLayout layout = new VerticalLayout();
 				layout.setSpacing(true);
 				layout.setMargin(true);
+				Label label = new Label("Comment: " + bean.getComment());
 				layout.addComponent(label);
+				if (SecurityUtil.isAdmin()) {
+					HorizontalLayout buttons = new HorizontalLayout();
+					buttons.setSpacing(true);
+					Button edit = new Button("Edit");
+					edit.addStyleName(ValoTheme.BUTTON_PRIMARY);
+					edit.addClickListener(event -> {
+						EditPlayerWindow editPlayerWindow = new EditPlayerWindow(playerService,
+								bean);
+						editPlayerWindow.addCloseListener(e -> {
+							if (editPlayerWindow.getSavedModel() != null) {
+								refreshGrid();
+							}
+						});
+						UI.getCurrent().addWindow(editPlayerWindow);
+					});
+					Button remove = new Button("Remove");
+					remove.addClickListener(event -> {
+						ConfirmWindow.show("Confirm", null, "Are you sure?", result -> {
+							if (result) {
+								playerService.delete(bean);
+								container.removeItem(bean);
+								refreshGrid();
+							}
+						});
+					});
+					buttons.addComponent(edit);
+					buttons.addComponent(remove);
+					layout.addComponent(buttons);
+				}
 				return layout;
 			}
 		});
@@ -111,7 +155,29 @@ public class TeamView extends VerticalLayout implements View {
 		grid.setColumnOrder("expander", "number");
 
 		addComponent(grid);
+		setExpandRatio(grid, 1);
 
+		if (SecurityUtil.isAdmin()) {
+			Button add = new Button("Add");
+			add.addStyleName(ValoTheme.BUTTON_PRIMARY);
+			add.addClickListener(event -> {
+				EditPlayerWindow editPlayerWindow = new EditPlayerWindow(playerService,
+						new Player());
+				editPlayerWindow.addCloseListener(e -> {
+					if (editPlayerWindow.getSavedModel() != null) {
+						container.addItem(editPlayerWindow.getSavedModel());
+						refreshGrid();
+					}
+				});
+				UI.getCurrent().addWindow(editPlayerWindow);
+			});
+			addComponent(add);
+		}
+
+	}
+
+	public void refreshGrid() {
+		grid.clearSortOrder();
 	}
 
 	@Override

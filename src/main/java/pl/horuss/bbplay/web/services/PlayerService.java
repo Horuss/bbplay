@@ -21,4 +21,12 @@ public class PlayerService {
 				Collectors.toList());
 	}
 
+	public Player save(Player player) {
+		return playerDao.save(player);
+	}
+
+	public void delete(Player player) {
+		playerDao.delete(player);
+	}
+
 }
