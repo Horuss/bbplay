@@ -31,7 +31,7 @@ import com.vaadin.ui.VerticalLayout;
 
 // @Secured({ "ROLE_USER", "ROLE_ADMIN" })
 @SpringView(name = "playbook")
-@SideBarItem(sectionId = Sections.VIEWS, caption = "Playbook")
+@SideBarItem(sectionId = Sections.VIEWS, caption = "Playbook", order = 2)
 @FontAwesomeIcon(FontAwesome.PLAY_CIRCLE)
 public class PlaybookView extends VerticalLayout implements View {
 
