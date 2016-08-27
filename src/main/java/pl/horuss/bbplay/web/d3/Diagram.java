@@ -8,7 +8,7 @@ import pl.horuss.bbplay.web.views.PlaybookView;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 
-@JavaScript({ "https://d3js.org/d3.v4.min.js", "diagram_connector.js" })
+@JavaScript({ "d3.v4.min.4.2.2.js", "diagram_connector.js" })
 public class Diagram extends AbstractJavaScriptComponent {
 
 	private static final long serialVersionUID = 4053617012919018688L;
