@@ -23,4 +23,8 @@ public class PlaybookService {
 				Collectors.toList());
 	}
 
+	public void delete(Play play) {
+		playDao.delete(play);
+	}
+
 }

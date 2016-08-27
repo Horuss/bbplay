@@ -116,7 +116,7 @@ public class PlaybookView extends VerticalLayout implements View {
 		grid.addSelectionListener(event -> {
 			Collection<Object> selectedRows = grid.getSelectionModel().getSelectedRows();
 			if (selectedRows != null && !selectedRows.isEmpty()) {
-				Play selectedPlay = (Play) grid.getSelectionModel().getSelectedRows().toArray()[0];
+				Play selectedPlay = (Play) selectedRows.toArray()[0];
 				right.setVisible(true);
 				bottom.setVisible(true);
 				description.setValue(selectedPlay.getDesc());

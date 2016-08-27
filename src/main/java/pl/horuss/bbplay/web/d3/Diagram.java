@@ -3,6 +3,7 @@ package pl.horuss.bbplay.web.d3;
 import org.vaadin.jouni.animator.shared.AnimType;
 
 import pl.horuss.bbplay.web.MainUI;
+import pl.horuss.bbplay.web.views.PlaybookEditView;
 import pl.horuss.bbplay.web.views.PlaybookView;
 
 import com.vaadin.annotations.JavaScript;
@@ -29,6 +30,10 @@ public class Diagram extends AbstractJavaScriptComponent {
 
 		});
 
+	}
+
+	public Diagram(PlaybookEditView playbookEditView) {
+		// TODO Auto-generated constructor stub
 	}
 
 	public void init(String data) {

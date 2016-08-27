@@ -16,7 +16,7 @@ public class Play {
 	@Id
 	@GeneratedValue
 	@Column(name = "pl_id")
-	private long id;
+	private Long id;
 
 	@Column(name = "pl_name")
 	private String name;
@@ -35,6 +35,10 @@ public class Play {
 
 	public Play() {
 
+	}
+
+	public boolean isPersist() {
+		return id != null;
 	}
 
 	public String getName() {

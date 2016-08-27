@@ -18,7 +18,7 @@ public class Step {
 	@Id
 	@GeneratedValue
 	@Column(name = "st_id")
-	private long id;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "st_pl_id")

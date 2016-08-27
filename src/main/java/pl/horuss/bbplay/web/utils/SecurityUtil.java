@@ -7,7 +7,7 @@ public class SecurityUtil {
 
 	public static boolean isAdmin() {
 		return SecurityContextHolder.getContext().getAuthentication().getAuthorities()
-				.contains(new SimpleGrantedAuthority("ADMIN"));
+				.contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
 	}
 
 	public static boolean isCurrentUser(String username) {

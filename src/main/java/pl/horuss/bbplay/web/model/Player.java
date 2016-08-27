@@ -14,7 +14,7 @@ public class Player {
 	@Id
 	@GeneratedValue
 	@Column(name = "pla_id")
-	private long id;
+	private Long id;
 
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "pla_us_id")
@@ -49,14 +49,6 @@ public class Player {
 		this.role = "";
 		this.comment = "";
 		this.number = 0;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	public User getUser() {

@@ -56,7 +56,6 @@ public class TeamView extends VerticalLayout implements View {
 		BeanItemContainer<Player> container = new BeanItemContainer<Player>(Player.class,
 				this.playerService.getPlayers());
 		GeneratedPropertyContainer wrapperContainer = new GeneratedPropertyContainer(container);
-		wrapperContainer.removeContainerProperty("id");
 		wrapperContainer.removeContainerProperty("user");
 		wrapperContainer.removeContainerProperty("comment");
 
