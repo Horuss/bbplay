@@ -22,6 +22,10 @@ public class PlaybookService {
 		return StreamSupport.stream(playDao.findAll().spliterator(), false).collect(
 				Collectors.toList());
 	}
+	
+	public Play save(Play play) {
+		return playDao.save(play);
+	}
 
 	public void delete(Play play) {
 		playDao.delete(play);

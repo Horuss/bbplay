@@ -34,7 +34,9 @@ public class Play {
 	private List<Step> steps;
 
 	public Play() {
-
+		this.name = "";
+		this.call = "";
+		this.desc = "";
 	}
 
 	public boolean isPersist() {

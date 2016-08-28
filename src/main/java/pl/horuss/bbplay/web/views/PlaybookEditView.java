@@ -12,6 +12,7 @@ import pl.horuss.bbplay.web.d3.Diagram;
 import pl.horuss.bbplay.web.model.Play;
 import pl.horuss.bbplay.web.model.Step;
 import pl.horuss.bbplay.web.parts.ConfirmWindow;
+import pl.horuss.bbplay.web.parts.EditPlayWindow;
 import pl.horuss.bbplay.web.services.PlaybookService;
 
 import com.vaadin.data.util.BeanItemContainer;
@@ -23,6 +24,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -64,19 +66,37 @@ public class PlaybookEditView extends VerticalLayout implements View {
 				this.playbookService.getPlays());
 
 		Grid gridPlays = new Grid(container);
-		gridPlays.setEditorEnabled(true);
 		gridPlays.setWidth("100%");
 		gridPlays.setHeight("200px");
-		gridPlays.setColumns("name", "call", "desc");
+		gridPlays.setColumns("name", "call");
 		gridPlays.setSelectionMode(SelectionMode.SINGLE);
+
+		gridPlays.addItemClickListener(event -> {
+			if (event.isDoubleClick()) {
+				Play bean = (Play) event.getItemId();
+				EditPlayWindow editPlayWindow = new EditPlayWindow(playbookService, bean);
+				editPlayWindow.addCloseListener(e -> {
+					if (editPlayWindow.getSavedModel() != null) {
+						gridPlays.clearSortOrder();
+					}
+				});
+				UI.getCurrent().addWindow(editPlayWindow);
+			}
+		});
 
 		HorizontalLayout playsButtons = new HorizontalLayout();
 		playsButtons.setSpacing(true);
 		Button addPlay = new Button("Add");
 		addPlay.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		addPlay.addClickListener(event -> {
-			gridPlays.getContainerDataSource().addItem(new Play());
-			gridPlays.clearSortOrder();
+			EditPlayWindow editPlayWindow = new EditPlayWindow(playbookService, new Play());
+			editPlayWindow.addCloseListener(e -> {
+				if (editPlayWindow.getSavedModel() != null) {
+					container.addItem(editPlayWindow.getSavedModel());
+					gridPlays.clearSortOrder();
+				}
+			});
+			UI.getCurrent().addWindow(editPlayWindow);
 		});
 		Button removePlay = new Button("Remove");
 		removePlay.setEnabled(false);
