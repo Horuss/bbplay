@@ -34,6 +34,9 @@ public class Diagram extends AbstractJavaScriptComponent {
 
 	public Diagram(PlaybookEditView playbookEditView) {
 		// TODO Auto-generated constructor stub
+		addFunction("updateState", arguments -> {
+
+		});
 	}
 
 	public void init(String data) {

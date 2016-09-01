@@ -2,6 +2,10 @@ package pl.horuss.bbplay.web.views;
 
 import java.util.Collection;
 
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
+import net.sf.json.JsonConfig;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
@@ -159,11 +163,16 @@ public class PlaybookEditView extends VerticalLayout implements View {
 				gridSteps.setContainerDataSource(new BeanItemContainer<Step>(Step.class,
 						selectedPlay.getSteps()));
 				gridSteps.setColumns("order", "desc");
+				JsonConfig jsonConfig = new JsonConfig();
+				JSONObject jsonNodes = (JSONObject) JSONSerializer.toJSON(selectedPlay, jsonConfig);
+				diagram.init(jsonNodes.toString());
 				stepsContainer.setVisible(true);
 				removePlay.setEnabled(true);
+				right.setVisible(true);
 			} else {
 				stepsContainer.setVisible(false);
 				removePlay.setEnabled(false);
+				right.setVisible(false);
 			}
 		});
 
@@ -172,10 +181,9 @@ public class PlaybookEditView extends VerticalLayout implements View {
 			if (selectedRows != null && !selectedRows.isEmpty()) {
 				Step selectedStep = (Step) selectedRows.toArray()[0];
 				// TODO diagram call
-				right.setVisible(true);
+				diagram.draw(selectedStep.getOrder() - 1);
 				removeStep.setEnabled(true);
 			} else {
-				right.setVisible(false);
 				removeStep.setEnabled(false);
 			}
 		});
