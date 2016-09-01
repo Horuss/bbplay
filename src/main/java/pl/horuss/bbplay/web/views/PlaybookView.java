@@ -124,6 +124,7 @@ public class PlaybookView extends VerticalLayout implements View {
 				JsonConfig jsonConfig = new JsonConfig();
 				JSONObject jsonNodes = (JSONObject) JSONSerializer.toJSON(selectedPlay, jsonConfig);
 				diagram.init(jsonNodes.toString());
+				diagram.draw(0);
 			} else {
 				right.setVisible(false);
 				bottom.setVisible(false);

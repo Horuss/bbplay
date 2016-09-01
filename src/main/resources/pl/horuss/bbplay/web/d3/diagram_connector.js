@@ -29,30 +29,48 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 	}
 	
 	function drawStep(step) {
-		step.entites.forEach(function(entity, entityNo) {
-			var g = diagramFrame.append("svg")
-				.attr("class", "node")
-				.attr("id", "se" + entity.id);
-			g.append("circle")
-				.attr("r", size[entity.type])
-				.attr("cx", size[entity.type] + 2)
-				.attr("cy", size[entity.type] + 2)
-				.attr("stroke", colorStroke[entity.type])
-				.attr("stroke-width", "2")
-				.style("fill", colorFill[entity.type]);
-			g.append("text")
-				.attr("text-anchor", "middle")
-				.attr("dy", size[entity.type] + 6)
-				.attr("dx", size[entity.type] + 2)
-				.attr("class", "label")
-				.attr("stroke-width", "1")
-				.attr("fill", "#000")
-				.style("font-size", '15px')
-				.style("font-weight", 'bold')
-				.style("fill", '#555')
-				.text(entity.label)
-			g.attr("x", px(entity.x) - size[entity.type] - 2).attr("y", py(entity.y) - size[entity.type] - 2)
-		});
+		if (step.order != 1) {
+			step.entites.forEach(function(entity, entityNo) {
+				var selEnt = diagramFrame.select("#se" + entity.id);
+					selEnt.attr("x", px(entity.x) - size[entity.type] - 2).attr("y", py(entity.y) - size[entity.type] - 2);
+				}
+			);
+		} else {
+			step.entites.forEach(function(entity, entityNo) {
+				var g = diagramFrame.append("svg")
+					.attr("class", "node")
+					.attr("id", "se" + entity.id);
+				g.append("circle")
+					.attr("r", size[entity.type])
+					.attr("cx", size[entity.type] + 2)
+					.attr("cy", size[entity.type] + 2)
+					.attr("stroke", colorStroke[entity.type])
+					.attr("stroke-width", "2")
+					.style("fill", colorFill[entity.type]);
+				g.append("text")
+					.attr("text-anchor", "middle")
+					.attr("dy", size[entity.type] + 6)
+					.attr("dx", size[entity.type] + 2)
+					.attr("class", "label")
+					.attr("stroke-width", "1")
+					.attr("fill", "#000")
+					.style("font-size", '15px')
+					.style("font-weight", 'bold')
+					.style("fill", '#555')
+					.text(entity.label)
+				g.attr("x", px(entity.x) - size[entity.type] - 2).attr("y", py(entity.y) - size[entity.type] - 2)
+			});
+		}
+		
+		var oper;
+		if (play.steps.length == step.order) {
+			oper= "end";
+		} else if (1 == step.order) {
+			oper= "init"
+		} else { 
+			oper= "step"
+		}
+		connector.updateState(oper, step.order, step.desc);
 	}
 	
 	this.init = function(data) {
@@ -93,24 +111,10 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 				.attr("stroke-width", 2)
 				.attr("stroke", "black");
 		}
-		   
-		drawStep(play.steps[0]);
-		connector.updateState("init", play.steps[0].order, play.steps[0].desc)
 	},
 	
 	this.draw = function(step) {
-		play.steps[step].entites.forEach(function(entity, entityNo) {
-			var selEnt = diagramFrame.select("#se" + entity.id);
-				selEnt.attr("x", px(entity.x) - size[entity.type] - 2).attr("y", py(entity.y) - size[entity.type] - 2);
-			}
-		);
-		var oper;
-		if (play.steps.length == step) {
-			oper= "end";
-		} else { 
-			oper= "step"
-		}
-		connector.updateState(oper, play.steps[step].order, play.steps[step].desc);
+		drawStep(play.steps[step]);
 	},
 
 	this.play = function(speed, delay) {
