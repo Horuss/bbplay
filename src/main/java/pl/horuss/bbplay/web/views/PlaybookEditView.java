@@ -7,11 +7,13 @@ import org.springframework.security.access.annotation.Secured;
 import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
+import pl.horuss.bbplay.web.BBPlay;
 import pl.horuss.bbplay.web.Sections;
 import pl.horuss.bbplay.web.d3.Diagram;
 import pl.horuss.bbplay.web.json.AnnotationExclusionStrategy;
 import pl.horuss.bbplay.web.model.Play;
 import pl.horuss.bbplay.web.model.Step;
+import pl.horuss.bbplay.web.model.StepEntity;
 import pl.horuss.bbplay.web.parts.ConfirmWindow;
 import pl.horuss.bbplay.web.parts.EditPlayWindow;
 import pl.horuss.bbplay.web.services.PlaybookService;
@@ -43,6 +45,8 @@ public class PlaybookEditView extends VerticalLayout implements View {
 	private final Gson gson = new GsonBuilder().setExclusionStrategies(new AnnotationExclusionStrategy()).create();
 
 	private Diagram diagram;
+	
+	private Play selectedPlay;
 
 	@Autowired
 	public PlaybookEditView(PlaybookService playbookService) {
@@ -60,6 +64,7 @@ public class PlaybookEditView extends VerticalLayout implements View {
 
 		VerticalLayout right = new VerticalLayout();
 		right.setMargin(true);
+		right.setSpacing(true);
 		right.setVisible(false);
 
 		VerticalLayout stepsContainer = new VerticalLayout();
@@ -108,13 +113,11 @@ public class PlaybookEditView extends VerticalLayout implements View {
 			ConfirmWindow.show("Confirm", null, "Are you sure?",
 					result -> {
 						if (result) {
-							Play bean = (Play) gridPlays.getSelectionModel().getSelectedRows()
-									.toArray()[0];
-							if (bean.isPersist()) {
-								playbookService.delete(bean);
+							if (selectedPlay.isPersist()) {
+								playbookService.delete(selectedPlay);
 							}
 							gridPlays.select(null);
-							gridPlays.getContainerDataSource().removeItem(bean);
+							gridPlays.getContainerDataSource().removeItem(selectedPlay);
 							gridPlays.clearSortOrder();
 						}
 					});
@@ -133,6 +136,7 @@ public class PlaybookEditView extends VerticalLayout implements View {
 		Button addStep = new Button("Add");
 		addStep.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		addStep.addClickListener(event -> {
+			//TODO fill step with entites from previous one
 			gridSteps.getContainerDataSource().addItem(new Step());
 			gridSteps.clearSortOrder();
 		});
@@ -159,7 +163,7 @@ public class PlaybookEditView extends VerticalLayout implements View {
 		gridPlays.addSelectionListener(event -> {
 			Collection<Object> selectedRows = gridPlays.getSelectionModel().getSelectedRows();
 			if (selectedRows != null && !selectedRows.isEmpty()) {
-				Play selectedPlay = (Play) selectedRows.toArray()[0];
+				selectedPlay = (Play) selectedRows.toArray()[0];
 				gridSteps.setContainerDataSource(new BeanItemContainer<Step>(Step.class,
 						selectedPlay.getSteps()));
 				gridSteps.setColumns("order", "desc");
@@ -169,6 +173,7 @@ public class PlaybookEditView extends VerticalLayout implements View {
 				removePlay.setEnabled(true);
 				right.setVisible(true);
 			} else {
+				selectedPlay = null;
 				stepsContainer.setVisible(false);
 				removePlay.setEnabled(false);
 				right.setVisible(false);
@@ -193,6 +198,26 @@ public class PlaybookEditView extends VerticalLayout implements View {
 
 		main.addComponent(left);
 
+		HorizontalLayout diagramButtons = new HorizontalLayout();
+		diagramButtons.setSpacing(true);
+		Button savePlayChanges = new Button("Save changes");
+		savePlayChanges.addStyleName(ValoTheme.BUTTON_PRIMARY);
+		savePlayChanges.addClickListener(event -> {
+			if (diagram.getUpdatedPlay() != null) {
+				// filling steps and play reference due to JSON serialization
+				for (Step step : diagram.getUpdatedPlay().getSteps()) {
+					step.setPlay(selectedPlay);
+					for (StepEntity entity : step.getEntities()) {
+						entity.setStep(step);
+					}
+				}
+				selectedPlay.setSteps(diagram.getUpdatedPlay().getSteps());
+			}
+			playbookService.save(selectedPlay);
+			BBPlay.info("Saved changes!");
+		});
+		diagramButtons.addComponent(savePlayChanges);
+		right.addComponent(diagramButtons);
 		diagram = new Diagram(this);
 		diagram.addStyleName("diagram");
 		right.addComponent(diagram);
@@ -200,6 +225,8 @@ public class PlaybookEditView extends VerticalLayout implements View {
 		main.addComponent(right);
 
 		addComponent(main);
+		
+		//TODO add new entites
 
 	}
 

@@ -3,6 +3,7 @@ package pl.horuss.bbplay.web.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -33,7 +34,7 @@ public class Step {
 	@Column(name = "st_desc")
 	private String desc;
 
-	@OneToMany(mappedBy = "step", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "step", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private List<StepEntity> entities;
 
 	public Step() {
@@ -62,6 +63,14 @@ public class Step {
 
 	public void setEntities(List<StepEntity> entities) {
 		this.entities = entities;
+	}
+
+	public Play getPlay() {
+		return play;
+	}
+
+	public void setPlay(Play play) {
+		this.play = play;
 	}
 
 }

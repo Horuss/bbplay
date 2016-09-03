@@ -5,14 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import pl.horuss.bbplay.web.json.JsonExclude;
 
 @Entity
-@IdClass(StepEntityId.class)
 public class StepEntity {
 
 	@Id
@@ -20,7 +18,9 @@ public class StepEntity {
 	@Column(name = "se_id")
 	private long id;
 
-	@Id
+	@Column(name = "se_en_id")
+	private long entityId;
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "se_st_id")
 	@JsonExclude
@@ -44,6 +44,14 @@ public class StepEntity {
 
 	public long getId() {
 		return id;
+	}
+
+	public long getEntityId() {
+		return entityId;
+	}
+
+	public void setEntityId(long entityId) {
+		this.entityId = entityId;
 	}
 
 	public int getX() {
@@ -76,6 +84,14 @@ public class StepEntity {
 
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+	public Step getStep() {
+		return step;
+	}
+
+	public void setStep(Step step) {
+		this.step = step;
 	}
 
 }

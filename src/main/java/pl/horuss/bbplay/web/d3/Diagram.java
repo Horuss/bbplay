@@ -17,6 +17,8 @@ import com.vaadin.ui.AbstractJavaScriptComponent;
 public class Diagram extends AbstractJavaScriptComponent {
 
 	private static final long serialVersionUID = 4053617012919018688L;
+	
+	private Play updatedPlay;
 
 	private final Gson gson = new GsonBuilder().setExclusionStrategies(
 			new AnnotationExclusionStrategy()).create();
@@ -40,14 +42,11 @@ public class Diagram extends AbstractJavaScriptComponent {
 	}
 
 	public Diagram(PlaybookEditView playbookEditView) {
-		// TODO save data with button on edit view
 		addFunction("updateState", arguments -> {
-			System.out.println("updateState in editing");
 		});
 
 		addFunction("updatePlay", arguments -> {
-			Play updatedPlay = gson.fromJson(arguments.getObject(0).toJson(), Play.class);
-			System.out.println(updatedPlay + arguments.getObject(0).toJson());
+			this.updatedPlay = gson.fromJson(arguments.getObject(0).toJson(), Play.class);;
 		});
 	}
 
@@ -70,5 +69,9 @@ public class Diagram extends AbstractJavaScriptComponent {
 	@Override
 	public DiagramState getState() {
 		return (DiagramState) super.getState();
+	}
+	
+	public Play getUpdatedPlay() {
+		return updatedPlay;
 	}
 }

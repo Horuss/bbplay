@@ -28,14 +28,15 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 	}
 
 	function dragended(d) {
-		d3.select(this).classed("active", false);
-		var id = d3.select(this).attr("id").substr(2);
-		var newX = d3.select(this).attr("x");
-		var newY = d3.select(this).attr("y");
+		var obj = d3.select(this);
+		obj.classed("active", false);
+		var id = obj.attr("id").substr(2);
 		currentStep.entities.forEach(function(entity, entityNo) {
-			if (entity.id == id) {
-				entity.x = cx(newX)
-				entity.y = cy(newY)
+			if (entity.entityId == id) {
+				obj.attr("x", obj.attr("x") - size[entity.type] - 2)
+				obj.attr("y", obj.attr("y") - size[entity.type] - 2)
+				entity.x = cx(parseFloat(obj.attr("x")) + size[entity.type] + 2)
+				entity.y = cy(parseFloat(obj.attr("y")) + size[entity.type] + 2)
 			}
 		})
 		connector.updatePlay(play); 
@@ -79,7 +80,7 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 		step.entities.forEach(function(entity, entityNo) {
 			var g = diagramFrame.append("svg")
 				.attr("class", "node")
-				.attr("id", "se" + entity.id);
+				.attr("id", "se" + entity.entityId);
 			if (editable) {
 				g.call(drag);
 			}
@@ -166,7 +167,7 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 		play.steps.forEach(function(step, stepNo) {
 			if (stepNo != 0) {
 				step.entities.forEach(function(entity, entityNo) {
-					var selEnt = diagramFrame.select("#se" + entity.id);
+					var selEnt = diagramFrame.select("#se" + entity.entityId);
 					if (selEnt.empty()) {
 						// draw new entity
 					} else {
