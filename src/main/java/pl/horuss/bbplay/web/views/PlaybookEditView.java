@@ -2,10 +2,6 @@ package pl.horuss.bbplay.web.views;
 
 import java.util.Collection;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-import net.sf.json.JsonConfig;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
@@ -13,12 +9,15 @@ import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 import pl.horuss.bbplay.web.Sections;
 import pl.horuss.bbplay.web.d3.Diagram;
+import pl.horuss.bbplay.web.json.AnnotationExclusionStrategy;
 import pl.horuss.bbplay.web.model.Play;
 import pl.horuss.bbplay.web.model.Step;
 import pl.horuss.bbplay.web.parts.ConfirmWindow;
 import pl.horuss.bbplay.web.parts.EditPlayWindow;
 import pl.horuss.bbplay.web.services.PlaybookService;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -41,6 +40,7 @@ public class PlaybookEditView extends VerticalLayout implements View {
 	private static final long serialVersionUID = 5633848238589020925L;
 
 	private final PlaybookService playbookService;
+	private final Gson gson = new GsonBuilder().setExclusionStrategies(new AnnotationExclusionStrategy()).create();
 
 	private Diagram diagram;
 
@@ -163,9 +163,8 @@ public class PlaybookEditView extends VerticalLayout implements View {
 				gridSteps.setContainerDataSource(new BeanItemContainer<Step>(Step.class,
 						selectedPlay.getSteps()));
 				gridSteps.setColumns("order", "desc");
-				JsonConfig jsonConfig = new JsonConfig();
-				JSONObject jsonNodes = (JSONObject) JSONSerializer.toJSON(selectedPlay, jsonConfig);
-				diagram.init(jsonNodes.toString());
+				String jsonSelectedPlay = gson.toJson(selectedPlay);
+				diagram.init(jsonSelectedPlay, true);
 				stepsContainer.setVisible(true);
 				removePlay.setEnabled(true);
 				right.setVisible(true);
@@ -180,7 +179,7 @@ public class PlaybookEditView extends VerticalLayout implements View {
 			Collection<Object> selectedRows = gridSteps.getSelectionModel().getSelectedRows();
 			if (selectedRows != null && !selectedRows.isEmpty()) {
 				Step selectedStep = (Step) selectedRows.toArray()[0];
-				// TODO diagram call
+				diagram.reset();
 				diagram.draw(selectedStep.getOrder() - 1);
 				removeStep.setEnabled(true);
 			} else {

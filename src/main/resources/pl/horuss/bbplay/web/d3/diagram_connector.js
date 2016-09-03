@@ -3,7 +3,9 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 	var connector = this;
 	var diagramFrame;
 	var play;
+	var currentStep;
 	var scheduledEvents = [];
+	var editable = false;
 	
 	var courtSizePx = {"OFFENSE" : [536, 500], "DEFENSE" : [536, 500],
 			"FULL_COURT" : [268, 500] }
@@ -11,6 +13,33 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 	var colorFill = {"BALL" : "#FF8133", "PLAYER_1" : "#7DFF6B", "PLAYER_2" : "#8C80FF"};
 	var colorStroke = {"BALL" : "#FF6200", "PLAYER_1" : "#1EFF00", "PLAYER_2" : "#1900FF"};
 	var size = {"BALL" : 10, "PLAYER_1" : 14, "PLAYER_2" : 14};
+	
+	var drag = d3.drag()
+    	.on("start", dragstarted)
+    	.on("drag", dragged)
+    	.on("end", dragended)
+    
+    function dragstarted(d) {
+		d3.select(this).raise().classed("active", true);
+	}
+
+	function dragged(d) {
+		d3.select(this).attr("x", d3.event.x).attr("y", d3.event.y);
+	}
+
+	function dragended(d) {
+		d3.select(this).classed("active", false);
+		var id = d3.select(this).attr("id").substr(2);
+		var newX = d3.select(this).attr("x");
+		var newY = d3.select(this).attr("y");
+		currentStep.entities.forEach(function(entity, entityNo) {
+			if (entity.id == id) {
+				entity.x = cx(newX)
+				entity.y = cy(newY)
+			}
+		})
+		connector.updatePlay(play); 
+	}
 	
 	function px(coordCm) {
 		var sizeOfCourt = 1500;
@@ -28,39 +57,52 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 		return courtSizePx[play.type][1] * coordCm / sizeOfCourt
 	}
 	
-	function drawStep(step) {
-		if (step.order != 1) {
-			step.entites.forEach(function(entity, entityNo) {
-				var selEnt = diagramFrame.select("#se" + entity.id);
-					selEnt.attr("x", px(entity.x) - size[entity.type] - 2).attr("y", py(entity.y) - size[entity.type] - 2);
-				}
-			);
-		} else {
-			step.entites.forEach(function(entity, entityNo) {
-				var g = diagramFrame.append("svg")
-					.attr("class", "node")
-					.attr("id", "se" + entity.id);
-				g.append("circle")
-					.attr("r", size[entity.type])
-					.attr("cx", size[entity.type] + 2)
-					.attr("cy", size[entity.type] + 2)
-					.attr("stroke", colorStroke[entity.type])
-					.attr("stroke-width", "2")
-					.style("fill", colorFill[entity.type]);
-				g.append("text")
-					.attr("text-anchor", "middle")
-					.attr("dy", size[entity.type] + 6)
-					.attr("dx", size[entity.type] + 2)
-					.attr("class", "label")
-					.attr("stroke-width", "1")
-					.attr("fill", "#000")
-					.style("font-size", '15px')
-					.style("font-weight", 'bold')
-					.style("fill", '#555')
-					.text(entity.label)
-				g.attr("x", px(entity.x) - size[entity.type] - 2).attr("y", py(entity.y) - size[entity.type] - 2)
-			});
+	function cx(coordPx) {
+		var sizeOfCourt = 1500;
+		if (play.type == "FULL_COURT") {
+			sizeOfCourt *= 2
 		}
+		return Math.round(sizeOfCourt * coordPx / courtSizePx[play.type][0])
+	}
+	
+	function cy(coordPx) {
+		var sizeOfCourt = 1400;
+		if (play.type == "FULL_COURT") {
+			sizeOfCourt *= 2
+		}
+		return Math.round(sizeOfCourt * coordPx / courtSizePx[play.type][1])
+	}
+	
+	function drawStep(step) {
+		diagramFrame.selectAll(".node").remove();
+		currentStep = step;
+		step.entities.forEach(function(entity, entityNo) {
+			var g = diagramFrame.append("svg")
+				.attr("class", "node")
+				.attr("id", "se" + entity.id);
+			if (editable) {
+				g.call(drag);
+			}
+			g.append("circle")
+				.attr("r", size[entity.type])
+				.attr("cx", size[entity.type] + 2)
+				.attr("cy", size[entity.type] + 2)
+				.attr("stroke", colorStroke[entity.type])
+				.attr("stroke-width", "2")
+				.style("fill", colorFill[entity.type]);
+			g.append("text")
+				.attr("text-anchor", "middle")
+				.attr("dy", size[entity.type] + 6)
+				.attr("dx", size[entity.type] + 2)
+				.attr("class", "label")
+				.attr("stroke-width", "1")
+				.attr("fill", "#000")
+				.style("font-size", '15px')
+				.style("font-weight", 'bold')
+				.style("fill", '#555')
+				.text(entity.label)
+			g.attr("x", px(entity.x) - size[entity.type] - 2).attr("y", py(entity.y) - size[entity.type] - 2)
+		});
 		
 		var oper;
 		if (play.steps.length == step.order) {
@@ -73,7 +115,8 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 		connector.updateState(oper, step.order, step.desc);
 	}
 	
-	this.init = function(data) {
+	this.init = function(data, edit) {
+		editable = edit;
 		play = eval('('+data+')' );
 		if(diagramFrame !== undefined) diagramFrame.remove()
 		diagramFrame = d3.select(this.getElement()).append("svg:svg")
@@ -122,10 +165,10 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 		drawStep(play.steps[0]);
 		play.steps.forEach(function(step, stepNo) {
 			if (stepNo != 0) {
-				step.entites.forEach(function(entity, entityNo) {
+				step.entities.forEach(function(entity, entityNo) {
 					var selEnt = diagramFrame.select("#se" + entity.id);
 					if (selEnt.empty()) {
-						drawStep(step)
+						// draw new entity
 					} else {
 						selEnt.transition()
 							.delay(delay * 1000 * stepNo + speed * 1000 * (stepNo-1))
@@ -151,7 +194,6 @@ window.pl_horuss_bbplay_web_d3_Diagram = function() {
 			clearTimeout(scheduledEvent);
 		});
 		scheduledEvents = [];
-		drawStep(play.steps[0]);
 		connector.updateState("init", play.steps[0].order, play.steps[0].desc);
 	}
 

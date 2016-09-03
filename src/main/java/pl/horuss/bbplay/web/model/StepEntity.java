@@ -9,6 +9,8 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import pl.horuss.bbplay.web.json.JsonExclude;
+
 @Entity
 @IdClass(StepEntityId.class)
 public class StepEntity {
@@ -21,6 +23,7 @@ public class StepEntity {
 	@Id
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "se_st_id")
+	@JsonExclude
 	private Step step;
 
 	@Column(name = "se_x")

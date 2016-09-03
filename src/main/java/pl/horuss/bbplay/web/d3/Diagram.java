@@ -3,9 +3,13 @@ package pl.horuss.bbplay.web.d3;
 import org.vaadin.jouni.animator.shared.AnimType;
 
 import pl.horuss.bbplay.web.MainUI;
+import pl.horuss.bbplay.web.json.AnnotationExclusionStrategy;
+import pl.horuss.bbplay.web.model.Play;
 import pl.horuss.bbplay.web.views.PlaybookEditView;
 import pl.horuss.bbplay.web.views.PlaybookView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 
@@ -13,6 +17,9 @@ import com.vaadin.ui.AbstractJavaScriptComponent;
 public class Diagram extends AbstractJavaScriptComponent {
 
 	private static final long serialVersionUID = 4053617012919018688L;
+
+	private final Gson gson = new GsonBuilder().setExclusionStrategies(
+			new AnnotationExclusionStrategy()).create();
 
 	public Diagram(PlaybookView view) {
 		addFunction("updateState", arguments -> {
@@ -33,14 +40,19 @@ public class Diagram extends AbstractJavaScriptComponent {
 	}
 
 	public Diagram(PlaybookEditView playbookEditView) {
-		// TODO Auto-generated constructor stub
+		// TODO save data with button on edit view
 		addFunction("updateState", arguments -> {
+			System.out.println("updateState in editing");
+		});
 
+		addFunction("updatePlay", arguments -> {
+			Play updatedPlay = gson.fromJson(arguments.getObject(0).toJson(), Play.class);
+			System.out.println(updatedPlay + arguments.getObject(0).toJson());
 		});
 	}
 
-	public void init(String data) {
-		callFunction("init", data);
+	public void init(String data, boolean edit) {
+		callFunction("init", data, edit);
 	}
 
 	public void draw(int step) {

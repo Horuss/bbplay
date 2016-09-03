@@ -2,19 +2,19 @@ package pl.horuss.bbplay.web.views;
 
 import java.util.Collection;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-import net.sf.json.JsonConfig;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 import pl.horuss.bbplay.web.Sections;
 import pl.horuss.bbplay.web.d3.Diagram;
+import pl.horuss.bbplay.web.json.AnnotationExclusionStrategy;
 import pl.horuss.bbplay.web.model.Play;
 import pl.horuss.bbplay.web.services.PlaybookService;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -38,10 +38,12 @@ public class PlaybookView extends VerticalLayout implements View {
 	private static final long serialVersionUID = -808608026129875870L;
 
 	private final PlaybookService playbookService;
+	private final Gson gson = new GsonBuilder().setExclusionStrategies(new AnnotationExclusionStrategy()).create();
 
 	private Diagram diagram;
 	private Label stepDesc;
 	private Slider stepsSlider;
+	private ValueChangeListener stepsSliderListener;
 	private HorizontalLayout stepsSliderLayout;
 	private Slider delay;
 	private Slider duration;
@@ -80,9 +82,8 @@ public class PlaybookView extends VerticalLayout implements View {
 		stepsSlider.setValue(1.0);
 		stepsSlider.setResolution(0);
 		stepsSlider.setWidth("100%");
-		stepsSlider.addValueChangeListener(event -> {
-			diagram.draw(((Double) stepsSlider.getValue()).intValue() - 1);
-		});
+		stepsSliderListener = event -> diagram.draw(((Double) stepsSlider.getValue()).intValue() - 1);
+		stepsSlider.addValueChangeListener(stepsSliderListener);
 		Button prevStep = new Button(FontAwesome.ARROW_LEFT);
 		prevStep.addClickListener(event -> {
 			if (((Double) stepsSlider.getValue()).intValue() != ((Double) stepsSlider.getMin())
@@ -121,9 +122,8 @@ public class PlaybookView extends VerticalLayout implements View {
 				bottom.setVisible(true);
 				description.setValue(selectedPlay.getDesc());
 				stepsSlider.setMax(selectedPlay.getSteps().size());
-				JsonConfig jsonConfig = new JsonConfig();
-				JSONObject jsonNodes = (JSONObject) JSONSerializer.toJSON(selectedPlay, jsonConfig);
-				diagram.init(jsonNodes.toString());
+				String jsonSelectedPlay = gson.toJson(selectedPlay);
+				diagram.init(jsonSelectedPlay, false);
 				diagram.draw(0);
 			} else {
 				right.setVisible(false);
@@ -148,6 +148,7 @@ public class PlaybookView extends VerticalLayout implements View {
 		reset.addClickListener(event -> {
 			enable();
 			diagram.reset();
+			diagram.draw(0);
 		});
 
 		delay = new Slider("Step delay (s)");
@@ -201,6 +202,7 @@ public class PlaybookView extends VerticalLayout implements View {
 		duration.setEnabled(true);
 		delay.setEnabled(true);
 		stepsSliderLayout.setEnabled(true);
+		stepsSlider.addValueChangeListener(stepsSliderListener);
 	}
 
 	public void disable() {
@@ -208,6 +210,7 @@ public class PlaybookView extends VerticalLayout implements View {
 		duration.setEnabled(false);
 		delay.setEnabled(false);
 		stepsSliderLayout.setEnabled(false);
+		stepsSlider.removeValueChangeListener(stepsSliderListener);
 	}
 
 }

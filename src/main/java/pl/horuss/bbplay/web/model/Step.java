@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import pl.horuss.bbplay.web.json.JsonExclude;
+
 @Entity
 public class Step {
 
@@ -22,6 +24,7 @@ public class Step {
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "st_pl_id")
+	@JsonExclude
 	private Play play;
 
 	@Column(name = "st_order")
@@ -31,7 +34,7 @@ public class Step {
 	private String desc;
 
 	@OneToMany(mappedBy = "step", fetch = FetchType.EAGER)
-	private List<StepEntity> entites;
+	private List<StepEntity> entities;
 
 	public Step() {
 
@@ -53,12 +56,12 @@ public class Step {
 		this.desc = desc;
 	}
 
-	public List<StepEntity> getEntites() {
-		return entites != null ? entites : (entites = new ArrayList<>());
+	public List<StepEntity> getEntities() {
+		return entities != null ? entities : (entities = new ArrayList<>());
 	}
 
-	public void setEntites(List<StepEntity> entites) {
-		this.entites = entites;
+	public void setEntities(List<StepEntity> entities) {
+		this.entities = entities;
 	}
 
 }
