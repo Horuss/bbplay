@@ -1,5 +1,7 @@
 package pl.horuss.bbplay.web.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -37,6 +39,18 @@ public class Player {
 
 	@Column(name = "pla_pos2")
 	private String position2;
+	
+	@Column(name = "pla_birthdate")
+	private Date birthdate;
+	
+	@Column(name = "pla_height")
+	private Integer height;
+	
+	@Column(name = "pla_email")
+	private String email;
+	
+	@Column(name = "pla_phone")
+	private String phone;
 
 	@Column(name = "pla_comment")
 	private String comment;
@@ -47,6 +61,9 @@ public class Player {
 		this.position = "";
 		this.position2 = "";
 		this.role = "";
+		this.height = 0;
+		this.email = "";
+		this.phone = "";
 		this.comment = "";
 		this.number = 0;
 	}
@@ -105,6 +122,38 @@ public class Player {
 
 	public void setPosition2(String position2) {
 		this.position2 = position2;
+	}
+
+	public Date getBirthdate() {
+		return birthdate;
+	}
+
+	public void setBirthdate(Date birthdate) {
+		this.birthdate = birthdate;
+	}
+
+	public Integer getHeight() {
+		return height;
+	}
+
+	public void setHeight(Integer height) {
+		this.height = height;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	public String getComment() {

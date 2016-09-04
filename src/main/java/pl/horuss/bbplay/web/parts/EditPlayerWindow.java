@@ -30,7 +30,7 @@ public class EditPlayerWindow extends Window {
 		super(" " + "Edit Player");
 		this.playerService = playerService;
 		setIcon(FontAwesome.WRENCH);
-		setWidth("350px");
+		setWidth("600px");
 		setModal(true);
 		setClosable(true);
 		setResizable(false);
@@ -41,20 +41,31 @@ public class EditPlayerWindow extends Window {
 	private VerticalLayout windowContent(Player player) {
 		VerticalLayout root = new VerticalLayout();
 		root.setMargin(true);
-
-		final FormLayout content = new FormLayout();
+		
+		HorizontalLayout formsContainer = new HorizontalLayout();
+		formsContainer.setSpacing(true);
 
 		FieldGroup fieldGroup = new BeanFieldGroup<Player>(Player.class);
 		fieldGroup.setItemDataSource(new BeanItem<Player>(player));
-		content.addComponent(fieldGroup.buildAndBind("Number", "number"));
-		content.addComponent(fieldGroup.buildAndBind("First name", "firstName"));
-		content.addComponent(fieldGroup.buildAndBind("Last name", "lastName"));
-		content.addComponent(fieldGroup.buildAndBind("Position", "position"));
-		content.addComponent(fieldGroup.buildAndBind("2nd position", "position2"));
-		content.addComponent(fieldGroup.buildAndBind("Role", "role"));
-		content.addComponent(fieldGroup.buildAndBind("Comment", "comment"));
-
-		root.addComponent(content);
+		
+		final FormLayout content1 = new FormLayout();
+		content1.addComponent(fieldGroup.buildAndBind("Number", "number"));
+		content1.addComponent(fieldGroup.buildAndBind("First name", "firstName"));
+		content1.addComponent(fieldGroup.buildAndBind("Last name", "lastName"));
+		content1.addComponent(fieldGroup.buildAndBind("Position", "position"));
+		content1.addComponent(fieldGroup.buildAndBind("2nd position", "position2"));
+		content1.addComponent(fieldGroup.buildAndBind("Role", "role"));
+		content1.addComponent(fieldGroup.buildAndBind("Comment", "comment"));
+		formsContainer.addComponent(content1);
+		
+		final FormLayout content2 = new FormLayout();
+		content2.addComponent(fieldGroup.buildAndBind("Birth date", "birthdate"));
+		content2.addComponent(fieldGroup.buildAndBind("Height (cm)", "height"));
+		content2.addComponent(fieldGroup.buildAndBind("Email", "email"));
+		content2.addComponent(fieldGroup.buildAndBind("Phone", "phone"));
+		formsContainer.addComponent(content2);
+		
+		root.addComponent(formsContainer);
 
 		HorizontalLayout footer = new HorizontalLayout();
 		footer.setWidth("100%");

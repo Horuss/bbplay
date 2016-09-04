@@ -1,5 +1,9 @@
 package pl.horuss.bbplay.web.views;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,11 +60,15 @@ public class TeamView extends VerticalLayout implements View {
 		GeneratedPropertyContainer wrapperContainer = new GeneratedPropertyContainer(container);
 		wrapperContainer.removeContainerProperty("user");
 		wrapperContainer.removeContainerProperty("comment");
+		wrapperContainer.removeContainerProperty("birthdate");
+		wrapperContainer.removeContainerProperty("phone");
+		wrapperContainer.removeContainerProperty("email");
+		wrapperContainer.removeContainerProperty("height");
 
 		grid = new Grid();
 		grid.setContainerDataSource(wrapperContainer);
 		grid.setSelectionMode(SelectionMode.SINGLE);
-		
+
 		grid.addSelectionListener(event -> {
 			event.getRemoved().forEach((item -> {
 				grid.setDetailsVisible(item, false);
@@ -82,14 +90,38 @@ public class TeamView extends VerticalLayout implements View {
 
 		grid.setDetailsGenerator(rowReference -> {
 			final Player bean = (Player) rowReference.getItemId();
-			// TODO fill with interesting data...
 			VerticalLayout layout = new VerticalLayout();
 			layout.setSpacing(true);
 			layout.setMargin(true);
+			if (bean.getBirthdate() != null) {
+				long yearsDelta = Period.between(
+						Instant.ofEpochMilli(bean.getBirthdate().getTime())
+								.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now())
+						.getYears();
+				layout.addComponent(new Label("<strong>Age:</strong> " + yearsDelta,
+						ContentMode.HTML));
+			}
+			if (bean.getHeight() != null && !bean.getHeight().equals(0)) {
+				layout.addComponent(new Label("<strong>Height:</strong> " + bean.getHeight()
+						+ " cm", ContentMode.HTML));
+			}
+			StringBuilder sb = new StringBuilder();
+			if (bean.getEmail() != null && !bean.getEmail().isEmpty()) {
+				sb.append(bean.getEmail());
+			}
+			if (bean.getPhone() != null && !bean.getPhone().isEmpty()) {
+				if (!sb.toString().isEmpty()) {
+					sb.append(", ");
+				}
+				sb.append(bean.getPhone());
+			}
+			if (!sb.toString().isEmpty()) {
+				layout.addComponent(new Label("<strong>Contact:</strong> " + sb.toString(),
+						ContentMode.HTML));
+			}
 			if (bean.getComment() != null && !bean.getComment().isEmpty()) {
-				Label label = new Label("<strong>Comment:</strong> " + bean.getComment(),
-						ContentMode.HTML);
-				layout.addComponent(label);
+				layout.addComponent(new Label("<strong>Comment:</strong> " + bean.getComment(),
+						ContentMode.HTML));
 			}
 			layout.addComponent(new Label("... and some other imporant info, photo etc."));
 			if (SecurityUtil.isAdmin()) {
@@ -98,8 +130,7 @@ public class TeamView extends VerticalLayout implements View {
 				Button edit = new Button("Edit");
 				edit.addStyleName(ValoTheme.BUTTON_PRIMARY);
 				edit.addClickListener(event1 -> {
-					EditPlayerWindow editPlayerWindow = new EditPlayerWindow(playerService,
-							bean);
+					EditPlayerWindow editPlayerWindow = new EditPlayerWindow(playerService, bean);
 					editPlayerWindow.addCloseListener(e -> {
 						if (editPlayerWindow.getSavedModel() != null) {
 							refreshGrid();
@@ -128,7 +159,7 @@ public class TeamView extends VerticalLayout implements View {
 		grid.setSortOrder(Arrays.asList(new SortOrder("number", SortDirection.ASCENDING)));
 		grid.setWidth("100%");
 		grid.setHeight("100%");
-		
+
 		addComponent(grid);
 		setExpandRatio(grid, 1);
 
