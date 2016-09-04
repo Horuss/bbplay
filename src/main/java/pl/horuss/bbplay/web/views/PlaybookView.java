@@ -38,7 +38,8 @@ public class PlaybookView extends VerticalLayout implements View {
 	private static final long serialVersionUID = -808608026129875870L;
 
 	private final PlaybookService playbookService;
-	private final Gson gson = new GsonBuilder().setExclusionStrategies(new AnnotationExclusionStrategy()).create();
+	private final Gson gson = new GsonBuilder().setExclusionStrategies(
+			new AnnotationExclusionStrategy()).create();
 
 	private Diagram diagram;
 	private Label stepDesc;
@@ -70,10 +71,6 @@ public class PlaybookView extends VerticalLayout implements View {
 
 		VerticalLayout bottom = new VerticalLayout();
 		bottom.setVisible(false);
-		final Label description = new Label();
-		description.setContentMode(ContentMode.HTML);
-		bottom.addComponent(description);
-		bottom.addComponent(new Label("<hr />", ContentMode.HTML));
 		stepsSliderLayout = new HorizontalLayout();
 		stepsSliderLayout.setSpacing(true);
 		stepsSlider = new Slider();
@@ -82,7 +79,8 @@ public class PlaybookView extends VerticalLayout implements View {
 		stepsSlider.setValue(1.0);
 		stepsSlider.setResolution(0);
 		stepsSlider.setWidth("100%");
-		stepsSliderListener = event -> diagram.draw(((Double) stepsSlider.getValue()).intValue() - 1);
+		stepsSliderListener = event -> diagram
+				.draw(((Double) stepsSlider.getValue()).intValue() - 1);
 		stepsSlider.addValueChangeListener(stepsSliderListener);
 		Button prevStep = new Button(FontAwesome.ARROW_LEFT);
 		prevStep.addClickListener(event -> {
@@ -111,16 +109,15 @@ public class PlaybookView extends VerticalLayout implements View {
 
 		Grid grid = new Grid(container);
 		grid.setWidth("100%");
-		grid.setHeight("200px");
+		grid.setHeight("350px");
 		grid.setColumns("name", "call");
 		grid.setSelectionMode(SelectionMode.SINGLE);
 		grid.addSelectionListener(event -> {
-			Collection<Object> selectedRows = grid.getSelectionModel().getSelectedRows();
+			Collection<Object> selectedRows = event.getSelected();
 			if (selectedRows != null && !selectedRows.isEmpty()) {
 				Play selectedPlay = (Play) selectedRows.toArray()[0];
 				right.setVisible(true);
 				bottom.setVisible(true);
-				description.setValue(selectedPlay.getDesc());
 				stepsSlider.setMax(selectedPlay.getSteps().size());
 				String jsonSelectedPlay = gson.toJson(selectedPlay);
 				diagram.init(jsonSelectedPlay, false);
@@ -129,6 +126,23 @@ public class PlaybookView extends VerticalLayout implements View {
 				right.setVisible(false);
 				bottom.setVisible(false);
 			}
+			event.getRemoved().forEach((item -> {
+				grid.setDetailsVisible(item, false);
+			}));
+			event.getAdded().forEach((item -> {
+				grid.setDetailsVisible(item, true);
+			}));
+		});
+		grid.setDetailsGenerator(rowReference -> {
+			final Play bean = (Play) rowReference.getItemId();
+			VerticalLayout layout = new VerticalLayout();
+			layout.setSpacing(true);
+			layout.setMargin(true);
+			layout.addComponent(new Label("<strong>Type:</strong> " + bean.getType(),
+					ContentMode.HTML));
+			layout.addComponent(new Label("<strong>Description:</strong> " + bean.getDesc(),
+					ContentMode.HTML));
+			return layout;
 		});
 
 		left.addComponent(grid);
