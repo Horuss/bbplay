@@ -16,7 +16,7 @@ public class StepEntity {
 	@Id
 	@GeneratedValue
 	@Column(name = "se_id")
-	private long id;
+	private Long id;
 
 	@Column(name = "se_en_id")
 	private long entityId;
@@ -39,10 +39,18 @@ public class StepEntity {
 	private String label;
 
 	public StepEntity() {
-
+		this.label = "";
 	}
 
-	public long getId() {
+	public StepEntity(StepEntity other) {
+		this.entityId = other.entityId;
+		this.label = other.label;
+		this.type = other.type;
+		this.x = other.x;
+		this.y = other.y;
+	}
+
+	public Long getId() {
 		return id;
 	}
 

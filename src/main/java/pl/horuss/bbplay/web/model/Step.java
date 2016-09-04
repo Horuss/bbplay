@@ -16,7 +16,7 @@ import javax.persistence.OneToMany;
 import pl.horuss.bbplay.web.json.JsonExclude;
 
 @Entity
-public class Step {
+public class Step implements Comparable<Step> {
 
 	@Id
 	@GeneratedValue
@@ -34,11 +34,11 @@ public class Step {
 	@Column(name = "st_desc")
 	private String desc;
 
-	@OneToMany(mappedBy = "step", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "step", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<StepEntity> entities;
 
 	public Step() {
-
+		this.desc = "";
 	}
 
 	public int getOrder() {
@@ -71,6 +71,11 @@ public class Step {
 
 	public void setPlay(Play play) {
 		this.play = play;
+	}
+
+	@Override
+	public int compareTo(Step o) {
+		return new Integer(this.order).compareTo(new Integer(o.order));
 	}
 
 }

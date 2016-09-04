@@ -31,7 +31,7 @@ public class Play {
 	@Column(name = "pl_type")
 	private PlayType type;
 
-	@OneToMany(mappedBy = "play", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "play", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Step> steps;
 
 	public Play() {
