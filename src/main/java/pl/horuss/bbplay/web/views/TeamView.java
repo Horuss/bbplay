@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
+import pl.horuss.bbplay.web.BBPlay;
 import pl.horuss.bbplay.web.Sections;
 import pl.horuss.bbplay.web.model.Player;
 import pl.horuss.bbplay.web.parts.ConfirmWindow;
@@ -70,12 +71,20 @@ public class TeamView extends VerticalLayout implements View {
 		grid.setSelectionMode(SelectionMode.SINGLE);
 
 		grid.addSelectionListener(event -> {
-			event.getRemoved().forEach((item -> {
-				grid.setDetailsVisible(item, false);
-			}));
 			event.getAdded().forEach((item -> {
 				grid.setDetailsVisible(item, true);
 			}));
+			event.getRemoved().forEach((item -> {
+				grid.setDetailsVisible(item, false);
+			}));
+		});
+		
+		grid.setRowStyleGenerator(rowRef -> {
+			Player player = (Player) rowRef.getItemId();
+			if (BBPlay.currentUser().compareTo(player.getUser()) == 0) {
+				return "bold";
+			}
+			return null;
 		});
 
 		Column column = grid.getColumn("number");
@@ -123,14 +132,13 @@ public class TeamView extends VerticalLayout implements View {
 				layout.addComponent(new Label("<strong>Comment:</strong> " + bean.getComment(),
 						ContentMode.HTML));
 			}
-			layout.addComponent(new Label("... and some other imporant info, photo etc."));
-			if (SecurityUtil.isAdmin()) {
-				HorizontalLayout buttons = new HorizontalLayout();
-				buttons.setSpacing(true);
+			HorizontalLayout buttons = new HorizontalLayout();
+			buttons.setSpacing(true);
+			if (SecurityUtil.isAdmin() || BBPlay.currentUser().compareTo(bean.getUser()) == 0) {
 				Button edit = new Button("Edit");
 				edit.addStyleName(ValoTheme.BUTTON_PRIMARY);
 				edit.addClickListener(event1 -> {
-					EditPlayerWindow editPlayerWindow = new EditPlayerWindow(playerService, bean);
+					EditPlayerWindow editPlayerWindow = new EditPlayerWindow(playerService, bean, SecurityUtil.isAdmin());
 					editPlayerWindow.addCloseListener(e -> {
 						if (editPlayerWindow.getSavedModel() != null) {
 							refreshGrid();
@@ -138,6 +146,9 @@ public class TeamView extends VerticalLayout implements View {
 					});
 					UI.getCurrent().addWindow(editPlayerWindow);
 				});
+				buttons.addComponent(edit);
+			}
+			if (SecurityUtil.isAdmin()) {
 				Button remove = new Button("Remove");
 				remove.addClickListener(event2 -> {
 					ConfirmWindow.show("Confirm", null, "Are you sure?", result -> {
@@ -148,8 +159,9 @@ public class TeamView extends VerticalLayout implements View {
 						}
 					});
 				});
-				buttons.addComponent(edit);
 				buttons.addComponent(remove);
+			}
+			if (buttons.getComponentCount() > 0) {
 				layout.addComponent(buttons);
 			}
 			return layout;
@@ -168,7 +180,7 @@ public class TeamView extends VerticalLayout implements View {
 			add.addStyleName(ValoTheme.BUTTON_PRIMARY);
 			add.addClickListener(event -> {
 				EditPlayerWindow editPlayerWindow = new EditPlayerWindow(playerService,
-						new Player());
+						new Player(), true);
 				editPlayerWindow.addCloseListener(e -> {
 					if (editPlayerWindow.getSavedModel() != null) {
 						container.addItem(editPlayerWindow.getSavedModel());
@@ -184,6 +196,10 @@ public class TeamView extends VerticalLayout implements View {
 
 	public void refreshGrid() {
 		grid.clearSortOrder();
+		for (Object item : grid.getContainerDataSource().getItemIds()) {
+			grid.setDetailsVisible(item, false);
+		}
+		grid.select(null);
 	}
 
 	@Override

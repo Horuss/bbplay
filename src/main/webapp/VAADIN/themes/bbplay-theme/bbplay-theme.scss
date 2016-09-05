@@ -16,10 +16,8 @@
   	box-shadow: 0px 0px 20px 0px black;
   }
   
-  .v-grid-cell button {
-    width: 25px;
-    line-height: 1;
-    height: 25px;
+  .v-grid-row.bold {
+    font-weight: bold;
   }
 
   .v-slot-scrollable-y {

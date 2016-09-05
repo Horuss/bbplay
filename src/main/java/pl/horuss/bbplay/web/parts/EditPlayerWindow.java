@@ -11,6 +11,7 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -26,7 +27,7 @@ public class EditPlayerWindow extends Window {
 
 	private Player savedModel = null;
 
-	public EditPlayerWindow(PlayerService playerService, Player player) {
+	public EditPlayerWindow(PlayerService playerService, Player player, boolean admin) {
 		super(" " + "Edit Player");
 		this.playerService = playerService;
 		setIcon(FontAwesome.WRENCH);
@@ -35,10 +36,10 @@ public class EditPlayerWindow extends Window {
 		setClosable(true);
 		setResizable(false);
 		addCloseShortcut(KeyCode.ESCAPE);
-		setContent(windowContent(player));
+		setContent(windowContent(player, admin));
 	}
 
-	private VerticalLayout windowContent(Player player) {
+	private VerticalLayout windowContent(Player player, boolean admin) {
 		VerticalLayout root = new VerticalLayout();
 		root.setMargin(true);
 		
@@ -49,13 +50,24 @@ public class EditPlayerWindow extends Window {
 		fieldGroup.setItemDataSource(new BeanItem<Player>(player));
 		
 		final FormLayout content1 = new FormLayout();
-		content1.addComponent(fieldGroup.buildAndBind("Number", "number"));
-		content1.addComponent(fieldGroup.buildAndBind("First name", "firstName"));
-		content1.addComponent(fieldGroup.buildAndBind("Last name", "lastName"));
-		content1.addComponent(fieldGroup.buildAndBind("Position", "position"));
-		content1.addComponent(fieldGroup.buildAndBind("2nd position", "position2"));
-		content1.addComponent(fieldGroup.buildAndBind("Role", "role"));
-		content1.addComponent(fieldGroup.buildAndBind("Comment", "comment"));
+		Field<?> buildAndBind = fieldGroup.buildAndBind("Number", "number");
+		buildAndBind.setEnabled(admin);
+		content1.addComponent(buildAndBind);
+		buildAndBind = fieldGroup.buildAndBind("First name", "firstName");
+		buildAndBind.setEnabled(admin);
+		content1.addComponent(buildAndBind);
+		buildAndBind = fieldGroup.buildAndBind("Last name", "lastName");
+		buildAndBind.setEnabled(admin);
+		content1.addComponent(buildAndBind);
+		buildAndBind = fieldGroup.buildAndBind("Position", "position");
+		buildAndBind.setEnabled(admin);
+		content1.addComponent(buildAndBind);
+		buildAndBind = fieldGroup.buildAndBind("2nd position", "position2");
+		buildAndBind.setEnabled(admin);
+		content1.addComponent(buildAndBind);
+		buildAndBind = fieldGroup.buildAndBind("Role", "role");
+		buildAndBind.setEnabled(admin);
+		content1.addComponent(buildAndBind);
 		formsContainer.addComponent(content1);
 		
 		final FormLayout content2 = new FormLayout();
@@ -63,6 +75,7 @@ public class EditPlayerWindow extends Window {
 		content2.addComponent(fieldGroup.buildAndBind("Height (cm)", "height"));
 		content2.addComponent(fieldGroup.buildAndBind("Email", "email"));
 		content2.addComponent(fieldGroup.buildAndBind("Phone", "phone"));
+		content2.addComponent(fieldGroup.buildAndBind("Comment", "comment"));
 		formsContainer.addComponent(content2);
 		
 		root.addComponent(formsContainer);

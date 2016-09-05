@@ -17,7 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-public class User implements UserDetails {
+public class User implements UserDetails, Comparable<User> {
 
 	private static final long serialVersionUID = 961898510928102753L;
 
@@ -37,6 +37,10 @@ public class User implements UserDetails {
 
 	public User() {
 
+	}
+
+	public long getId() {
+		return id;
 	}
 
 	public String getName() {
@@ -92,6 +96,14 @@ public class User implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	@Override
+	public int compareTo(User o) {
+		if (o == null) {
+			return -1;
+		}
+		return new Long(this.id).compareTo(new Long(o.id));
 	}
 
 }
