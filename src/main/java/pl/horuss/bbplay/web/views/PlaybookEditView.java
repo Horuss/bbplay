@@ -12,7 +12,7 @@ import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 import pl.horuss.bbplay.web.BBPlay;
 import pl.horuss.bbplay.web.Sections;
-import pl.horuss.bbplay.web.d3.Diagram;
+import pl.horuss.bbplay.web.diagram.Diagram;
 import pl.horuss.bbplay.web.json.AnnotationExclusionStrategy;
 import pl.horuss.bbplay.web.model.Play;
 import pl.horuss.bbplay.web.model.Step;

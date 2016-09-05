@@ -1,4 +1,4 @@
-package pl.horuss.bbplay.web.d3;
+package pl.horuss.bbplay.web.diagram;
 
 import org.vaadin.jouni.animator.shared.AnimType;
 
