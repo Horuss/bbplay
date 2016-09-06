@@ -1,4 +1,4 @@
-window.pl_horuss_bbplay_web_d3_Diagram = function() {
+window.pl_horuss_bbplay_web_diagram_Diagram = function() {
 	
 	var connector = this;
 	var diagramFrame;
