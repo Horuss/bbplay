@@ -3,6 +3,7 @@ package pl.horuss.bbplay.web.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -22,7 +23,7 @@ public class StepEntity {
 	private long entityId;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "se_st_id")
+	@JoinColumn(name = "se_st_id", foreignKey = @ForeignKey(name = "fk_se_st"))
 	@JsonExclude
 	private Step step;
 

@@ -201,7 +201,7 @@ public class PlaybookEditView extends VerticalLayout implements View {
 			if (selectedRows != null && !selectedRows.isEmpty()) {
 				selectedPlay = (Play) selectedRows.toArray()[0];
 				gridSteps.setContainerDataSource(new BeanItemContainer<Step>(Step.class,
-						selectedPlay.getSteps()));
+						playbookService.getSteps(selectedPlay)));
 				gridSteps.setColumns("order", "desc");
 				String jsonSelectedPlay = gson.toJson(selectedPlay);
 				diagram.init(jsonSelectedPlay, true);

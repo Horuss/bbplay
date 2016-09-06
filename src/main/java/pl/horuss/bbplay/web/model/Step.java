@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -23,8 +24,8 @@ public class Step implements Comparable<Step> {
 	@Column(name = "st_id")
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "st_pl_id")
+	@ManyToOne
+	@JoinColumn(name = "st_pl_id", foreignKey = @ForeignKey(name = "fk_st_pl"))
 	@JsonExclude
 	private Play play;
 

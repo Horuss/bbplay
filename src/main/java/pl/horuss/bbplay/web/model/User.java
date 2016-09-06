@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -32,7 +31,7 @@ public class User implements UserDetails, Comparable<User> {
 	@Column(name = "us_password")
 	private String password;
 
-	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "user")
 	private List<UserRole> roles;
 
 	public User() {

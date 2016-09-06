@@ -17,7 +17,7 @@ public class PlayerService {
 	private PlayerDao playerDao;
 
 	public List<Player> getPlayers() {
-		return StreamSupport.stream(playerDao.findAll().spliterator(), false).collect(
+		return StreamSupport.stream(playerDao.findAllWithUsers().spliterator(), false).collect(
 				Collectors.toList());
 	}
 

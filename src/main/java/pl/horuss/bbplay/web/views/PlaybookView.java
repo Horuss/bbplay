@@ -118,7 +118,7 @@ public class PlaybookView extends VerticalLayout implements View {
 				Play selectedPlay = (Play) selectedRows.toArray()[0];
 				right.setVisible(true);
 				bottom.setVisible(true);
-				stepsSlider.setMax(selectedPlay.getSteps().size());
+				stepsSlider.setMax(playbookService.getSteps(selectedPlay).size());
 				String jsonSelectedPlay = gson.toJson(selectedPlay);
 				diagram.init(jsonSelectedPlay, false);
 				diagram.draw(0);

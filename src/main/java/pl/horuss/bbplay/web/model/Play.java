@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -31,7 +30,7 @@ public class Play {
 	@Column(name = "pl_type")
 	private PlayType type;
 
-	@OneToMany(mappedBy = "play", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "play", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Step> steps;
 
 	public Play() {
@@ -42,6 +41,10 @@ public class Play {
 
 	public boolean isPersist() {
 		return id != null;
+	}
+
+	public Long getId() {
+		return id;
 	}
 
 	public String getName() {

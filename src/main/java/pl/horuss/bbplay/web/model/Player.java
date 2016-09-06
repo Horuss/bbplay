@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -19,7 +20,7 @@ public class Player {
 	private Long id;
 
 	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "pla_us_id")
+	@JoinColumn(name = "pla_us_id", foreignKey = @ForeignKey(name = "fk_pla_us"))
 	private User user;
 
 	@Column(name = "pla_num")
@@ -39,16 +40,16 @@ public class Player {
 
 	@Column(name = "pla_pos2")
 	private String position2;
-	
+
 	@Column(name = "pla_birthdate")
 	private Date birthdate;
-	
+
 	@Column(name = "pla_height")
 	private Integer height;
-	
+
 	@Column(name = "pla_email")
 	private String email;
-	
+
 	@Column(name = "pla_phone")
 	private String phone;
 

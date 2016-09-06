@@ -3,6 +3,7 @@ package pl.horuss.bbplay.web.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -20,7 +21,7 @@ public class UserRole {
 	private String name;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "ro_us_id")
+	@JoinColumn(name = "ro_us_id", foreignKey = @ForeignKey(name = "fk_ro_us"))
 	private User user;
 
 	public UserRole() {
