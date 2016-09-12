@@ -3,6 +3,7 @@ package pl.horuss.bbplay.web.parts;
 import pl.horuss.bbplay.web.BBPlay;
 import pl.horuss.bbplay.web.model.Play;
 import pl.horuss.bbplay.web.services.PlaybookService;
+import pl.horuss.bbplay.web.utils.I18n;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -28,7 +29,7 @@ public class EditPlayWindow extends Window {
 	private Play savedModel = null;
 
 	public EditPlayWindow(PlaybookService playbookService, Play play) {
-		super(" " + "Edit Play");
+		super(" " + I18n.t("plays.edit"));
 		this.playbookService = playbookService;
 		setIcon(FontAwesome.WRENCH);
 		setWidth("350px");
@@ -47,10 +48,10 @@ public class EditPlayWindow extends Window {
 
 		FieldGroup fieldGroup = new BeanFieldGroup<Play>(Play.class);
 		fieldGroup.setItemDataSource(new BeanItem<Play>(play));
-		content.addComponent(fieldGroup.buildAndBind("Name", "name"));
-		content.addComponent(fieldGroup.buildAndBind("Call", "call"));
-		content.addComponent(fieldGroup.buildAndBind("Description", "desc"));
-		Field<?> typeField = fieldGroup.buildAndBind("Type", "type");
+		content.addComponent(fieldGroup.buildAndBind(I18n.t("plays.name"), "name"));
+		content.addComponent(fieldGroup.buildAndBind(I18n.t("plays.call"), "call"));
+		content.addComponent(fieldGroup.buildAndBind(I18n.t("plays.description"), "desc"));
+		Field<?> typeField = fieldGroup.buildAndBind(I18n.t("plays.type"), "type");
 		typeField.setRequired(true);
 		content.addComponent(typeField);
 
@@ -63,21 +64,21 @@ public class EditPlayWindow extends Window {
 
 		Label footerText = new Label();
 
-		Button ok = new Button("OK");
+		Button ok = new Button(I18n.t("ok"));
 		ok.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		ok.addClickListener(event -> {
 			try {
 				fieldGroup.commit();
 				this.savedModel = playbookService.save(play);
 				EditPlayWindow.this.close();
-				BBPlay.info("Successfully changed!");
+				BBPlay.info(I18n.t("saveOk"));
 			} catch (CommitException e) {
-				BBPlay.error("Failed to save changes");
+				BBPlay.error(I18n.t("saveFail"));
 			}
 
 		});
 
-		Button cancel = new Button("Cancel");
+		Button cancel = new Button(I18n.t("cancel"));
 		cancel.addClickListener(event -> EditPlayWindow.this.close());
 
 		footer.addComponents(footerText, ok, cancel);

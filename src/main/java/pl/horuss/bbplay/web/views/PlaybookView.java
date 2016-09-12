@@ -11,6 +11,7 @@ import pl.horuss.bbplay.web.diagram.Diagram;
 import pl.horuss.bbplay.web.json.AnnotationExclusionStrategy;
 import pl.horuss.bbplay.web.model.Play;
 import pl.horuss.bbplay.web.services.PlaybookService;
+import pl.horuss.bbplay.web.utils.I18n;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,6 +24,7 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -31,7 +33,7 @@ import com.vaadin.ui.VerticalLayout;
 
 // @Secured({ "ROLE_USER", "ROLE_ADMIN" })
 @SpringView(name = "playbook")
-@SideBarItem(sectionId = Sections.VIEWS, caption = "Playbook", order = 2)
+@SideBarItem(sectionId = Sections.VIEWS, captionCode = "plays", order = 2)
 @FontAwesomeIcon(FontAwesome.PLAY_CIRCLE)
 public class PlaybookView extends VerticalLayout implements View {
 
@@ -112,6 +114,12 @@ public class PlaybookView extends VerticalLayout implements View {
 		grid.setHeight("350px");
 		grid.setColumns("name", "call");
 		grid.setSelectionMode(SelectionMode.SINGLE);
+
+		Column col = grid.getColumn("name");
+		col.setHeaderCaption(I18n.t("plays.name"));
+		col = grid.getColumn("call");
+		col.setHeaderCaption(I18n.t("plays.call"));
+
 		grid.addSelectionListener(event -> {
 			Collection<Object> selectedRows = event.getSelected();
 			if (selectedRows != null && !selectedRows.isEmpty()) {
@@ -138,10 +146,10 @@ public class PlaybookView extends VerticalLayout implements View {
 			VerticalLayout layout = new VerticalLayout();
 			layout.setSpacing(true);
 			layout.setMargin(true);
-			layout.addComponent(new Label("<strong>Type:</strong> " + bean.getType(),
-					ContentMode.HTML));
-			layout.addComponent(new Label("<strong>Description:</strong> " + bean.getDesc(),
-					ContentMode.HTML));
+			layout.addComponent(new Label("<strong>" + I18n.t("plays.type") + ":</strong> "
+					+ bean.getType(), ContentMode.HTML));
+			layout.addComponent(new Label("<strong>" + I18n.t("plays.description") + ":</strong> "
+					+ bean.getDesc(), ContentMode.HTML));
 			return layout;
 		});
 
@@ -165,14 +173,14 @@ public class PlaybookView extends VerticalLayout implements View {
 			diagram.draw(0);
 		});
 
-		delay = new Slider("Step delay (s)");
+		delay = new Slider(I18n.t("plays.stepDelay"));
 		delay.setImmediate(true);
 		delay.setMin(1);
 		delay.setMax(5);
 		delay.setValue(2.0);
 		delay.setResolution(0);
 
-		duration = new Slider("Step duration (s)");
+		duration = new Slider(I18n.t("plays.stepDuration"));
 		duration.setImmediate(true);
 		duration.setMin(1);
 		duration.setMax(5);

@@ -13,10 +13,10 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.UI;
 
 @SpringComponent
-@SideBarItem(sectionId = Sections.OPERATIONS, caption = "Change password", order = 0)
+@SideBarItem(sectionId = Sections.OPERATIONS, captionCode = "changePassword", order = 0)
 @FontAwesomeIcon(FontAwesome.WRENCH)
 public class ChangePasswordOperation implements Runnable {
-	
+
 	@Autowired
 	private UserService userService;
 

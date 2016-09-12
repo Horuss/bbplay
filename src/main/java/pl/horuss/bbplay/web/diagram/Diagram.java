@@ -5,6 +5,7 @@ import org.vaadin.jouni.animator.shared.AnimType;
 import pl.horuss.bbplay.web.MainUI;
 import pl.horuss.bbplay.web.json.AnnotationExclusionStrategy;
 import pl.horuss.bbplay.web.model.Play;
+import pl.horuss.bbplay.web.utils.I18n;
 import pl.horuss.bbplay.web.views.PlaybookEditView;
 import pl.horuss.bbplay.web.views.PlaybookView;
 
@@ -17,27 +18,32 @@ import com.vaadin.ui.AbstractJavaScriptComponent;
 public class Diagram extends AbstractJavaScriptComponent {
 
 	private static final long serialVersionUID = 4053617012919018688L;
-	
+
 	private Play updatedPlay;
 
 	private final Gson gson = new GsonBuilder().setExclusionStrategies(
 			new AnnotationExclusionStrategy()).create();
 
 	public Diagram(PlaybookView view) {
-		addFunction("updateState", arguments -> {
-			String param = arguments.getString(0);
-			int step = (int) Math.round(arguments.getNumber(1));
-			String desc = arguments.getString(2);
+		addFunction(
+				"updateState",
+				arguments -> {
+					String param = arguments.getString(0);
+					int step = (int) Math.round(arguments.getNumber(1));
+					String desc = arguments.getString(2);
 
-			if (param.equals("end")) {
-				view.enable();
-			}
+					if (param.equals("end")) {
+						view.enable();
+					}
 
-			view.getStepDesc().setValue("<strong>Step " + step + ":</strong><br/>" + desc);
-			MainUI.animator().animate(view.getStepDesc(), AnimType.FADE_IN).setDuration(400);
-			view.getStepsSlider().setValue((double) step);
+					view.getStepDesc().setValue(
+							"<strong>" + I18n.t("plays.step") + " " + step + ":</strong><br/>"
+									+ desc);
+					MainUI.animator().animate(view.getStepDesc(), AnimType.FADE_IN)
+							.setDuration(400);
+					view.getStepsSlider().setValue((double) step);
 
-		});
+				});
 
 	}
 
@@ -46,7 +52,8 @@ public class Diagram extends AbstractJavaScriptComponent {
 		});
 
 		addFunction("updatePlay", arguments -> {
-			this.updatedPlay = gson.fromJson(arguments.getObject(0).toJson(), Play.class);;
+			this.updatedPlay = gson.fromJson(arguments.getObject(0).toJson(), Play.class);
+			;
 		});
 	}
 
@@ -70,7 +77,7 @@ public class Diagram extends AbstractJavaScriptComponent {
 	public DiagramState getState() {
 		return (DiagramState) super.getState();
 	}
-	
+
 	public Play getUpdatedPlay() {
 		return updatedPlay;
 	}

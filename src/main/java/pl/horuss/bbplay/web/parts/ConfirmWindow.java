@@ -1,5 +1,7 @@
 package pl.horuss.bbplay.web.parts;
 
+import pl.horuss.bbplay.web.utils.I18n;
+
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
@@ -17,8 +19,8 @@ public class ConfirmWindow extends Window implements Button.ClickListener {
 	private static final long serialVersionUID = 2159295726379932002L;
 
 	private Listener listener;
-	Button yes = new Button("Yes", this);
-	Button no = new Button("No", this);
+	Button yes = new Button(I18n.t("yes"), this);
+	Button no = new Button(I18n.t("no"), this);
 
 	private ConfirmWindow(String title, Resource icon, String text, Listener listener) {
 		super(" " + title);

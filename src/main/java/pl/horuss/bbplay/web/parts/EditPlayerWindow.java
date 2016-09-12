@@ -3,6 +3,7 @@ package pl.horuss.bbplay.web.parts;
 import pl.horuss.bbplay.web.BBPlay;
 import pl.horuss.bbplay.web.model.Player;
 import pl.horuss.bbplay.web.services.PlayerService;
+import pl.horuss.bbplay.web.utils.I18n;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -28,10 +29,10 @@ public class EditPlayerWindow extends Window {
 	private Player savedModel = null;
 
 	public EditPlayerWindow(PlayerService playerService, Player player, boolean admin) {
-		super(" " + "Edit Player");
+		super(" " + I18n.t("player.edit"));
 		this.playerService = playerService;
 		setIcon(FontAwesome.WRENCH);
-		setWidth("600px");
+		setWidth("650px");
 		setModal(true);
 		setClosable(true);
 		setResizable(false);
@@ -50,32 +51,32 @@ public class EditPlayerWindow extends Window {
 		fieldGroup.setItemDataSource(new BeanItem<Player>(player));
 		
 		final FormLayout content1 = new FormLayout();
-		Field<?> buildAndBind = fieldGroup.buildAndBind("Number", "number");
+		Field<?> buildAndBind = fieldGroup.buildAndBind(I18n.t("player.number"), "number");
 		buildAndBind.setEnabled(admin);
 		content1.addComponent(buildAndBind);
-		buildAndBind = fieldGroup.buildAndBind("First name", "firstName");
+		buildAndBind = fieldGroup.buildAndBind(I18n.t("player.firstName"), "firstName");
 		buildAndBind.setEnabled(admin);
 		content1.addComponent(buildAndBind);
-		buildAndBind = fieldGroup.buildAndBind("Last name", "lastName");
+		buildAndBind = fieldGroup.buildAndBind(I18n.t("player.lastName"), "lastName");
 		buildAndBind.setEnabled(admin);
 		content1.addComponent(buildAndBind);
-		buildAndBind = fieldGroup.buildAndBind("Position", "position");
+		buildAndBind = fieldGroup.buildAndBind(I18n.t("player.position"), "position");
 		buildAndBind.setEnabled(admin);
 		content1.addComponent(buildAndBind);
-		buildAndBind = fieldGroup.buildAndBind("2nd position", "position2");
+		buildAndBind = fieldGroup.buildAndBind(I18n.t("player.position2"), "position2");
 		buildAndBind.setEnabled(admin);
 		content1.addComponent(buildAndBind);
-		buildAndBind = fieldGroup.buildAndBind("Role", "role");
+		buildAndBind = fieldGroup.buildAndBind(I18n.t("player.role"), "role");
 		buildAndBind.setEnabled(admin);
 		content1.addComponent(buildAndBind);
 		formsContainer.addComponent(content1);
 		
 		final FormLayout content2 = new FormLayout();
-		content2.addComponent(fieldGroup.buildAndBind("Birth date", "birthdate"));
-		content2.addComponent(fieldGroup.buildAndBind("Height (cm)", "height"));
-		content2.addComponent(fieldGroup.buildAndBind("Email", "email"));
-		content2.addComponent(fieldGroup.buildAndBind("Phone", "phone"));
-		content2.addComponent(fieldGroup.buildAndBind("Comment", "comment"));
+		content2.addComponent(fieldGroup.buildAndBind(I18n.t("player.birthdate"), "birthdate"));
+		content2.addComponent(fieldGroup.buildAndBind(I18n.t("player.height"), "height"));
+		content2.addComponent(fieldGroup.buildAndBind(I18n.t("player.email"), "email"));
+		content2.addComponent(fieldGroup.buildAndBind(I18n.t("player.phone"), "phone"));
+		content2.addComponent(fieldGroup.buildAndBind(I18n.t("player.comment"), "comment"));
 		formsContainer.addComponent(content2);
 		
 		root.addComponent(formsContainer);
@@ -87,21 +88,21 @@ public class EditPlayerWindow extends Window {
 
 		Label footerText = new Label();
 
-		Button ok = new Button("OK");
+		Button ok = new Button(I18n.t("ok"));
 		ok.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		ok.addClickListener(event -> {
 			try {
 				fieldGroup.commit();
 				this.savedModel = playerService.save(player);
 				EditPlayerWindow.this.close();
-				BBPlay.info("Successfully changed!");
+				BBPlay.info(I18n.t("saveOk"));
 			} catch (CommitException e) {
-				BBPlay.error("Failed to save changes");
+				BBPlay.error(I18n.t("saveFail"));
 			}
 
 		});
 
-		Button cancel = new Button("Cancel");
+		Button cancel = new Button(I18n.t("cancel"));
 		cancel.addClickListener(event -> EditPlayerWindow.this.close());
 
 		footer.addComponents(footerText, ok, cancel);

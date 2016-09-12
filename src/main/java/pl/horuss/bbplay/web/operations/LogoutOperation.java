@@ -11,7 +11,7 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringComponent;
 
 @SpringComponent
-@SideBarItem(sectionId = Sections.OPERATIONS, caption = "Logout")
+@SideBarItem(sectionId = Sections.OPERATIONS, captionCode = "logout")
 @FontAwesomeIcon(FontAwesome.POWER_OFF)
 public class LogoutOperation implements Runnable {
 

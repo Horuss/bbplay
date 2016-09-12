@@ -2,6 +2,7 @@ package pl.horuss.bbplay.web.parts;
 
 import pl.horuss.bbplay.web.BBPlay;
 import pl.horuss.bbplay.web.services.UserService;
+import pl.horuss.bbplay.web.utils.I18n;
 
 import com.vaadin.data.validator.AbstractStringValidator;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -26,7 +27,7 @@ public class ChangePasswordWindow extends Window {
 	private PasswordField confirmPassword;
 
 	public ChangePasswordWindow(UserService userService) {
-		super(" " + "Change password");
+		super(" " + I18n.t("changePassword"));
 		this.userService = userService;
 		setIcon(FontAwesome.WRENCH);
 		setWidth("350px");
@@ -44,17 +45,17 @@ public class ChangePasswordWindow extends Window {
 
 		final FormLayout content = new FormLayout();
 
-		confirmPassword = new PasswordField("Confirm password");
+		confirmPassword = new PasswordField(I18n.t("changePassword.confirm"));
 		confirmPassword.setImmediate(false);
-		confirmPassword
-				.addValidator(new AbstractStringValidator("New passwords must be the same!") {
-					@Override
-					protected boolean isValidValue(String value) {
-						return value.equals(newPassword.getValue());
-					}
-				});
-		content.addComponent(oldPassword = new PasswordField("Current password"));
-		content.addComponent(newPassword = new PasswordField("New password"));
+		confirmPassword.addValidator(new AbstractStringValidator(I18n
+				.t("changePassword.errorMatch")) {
+			@Override
+			protected boolean isValidValue(String value) {
+				return value.equals(newPassword.getValue());
+			}
+		});
+		content.addComponent(oldPassword = new PasswordField(I18n.t("changePassword.current")));
+		content.addComponent(newPassword = new PasswordField(I18n.t("changePassword.new")));
 		content.addComponent(confirmPassword);
 
 		root.addComponent(content);
@@ -66,7 +67,7 @@ public class ChangePasswordWindow extends Window {
 
 		Label footerText = new Label();
 
-		Button ok = new Button("OK");
+		Button ok = new Button(I18n.t("ok"));
 		ok.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		ok.addClickListener(event -> {
 			if (confirmPassword.isValid()) {
@@ -74,14 +75,14 @@ public class ChangePasswordWindow extends Window {
 						newPassword.getValue());
 				if (changePasswordResult == null) {
 					ChangePasswordWindow.this.close();
-					BBPlay.info("Successfully changed!");
+					BBPlay.info(I18n.t("changePassword.success"));
 				} else {
 					BBPlay.error(changePasswordResult);
 				}
 			}
 		});
 
-		Button cancel = new Button("Cancel");
+		Button cancel = new Button(I18n.t("cancel"));
 		cancel.addClickListener(event -> ChangePasswordWindow.this.close());
 
 		footer.addComponents(footerText, ok, cancel);

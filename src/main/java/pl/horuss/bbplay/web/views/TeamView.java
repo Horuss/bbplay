@@ -16,11 +16,11 @@ import pl.horuss.bbplay.web.model.Player;
 import pl.horuss.bbplay.web.parts.ConfirmWindow;
 import pl.horuss.bbplay.web.parts.EditPlayerWindow;
 import pl.horuss.bbplay.web.services.PlayerService;
+import pl.horuss.bbplay.web.utils.I18n;
 import pl.horuss.bbplay.web.utils.SecurityUtil;
 
 import com.vaadin.data.sort.SortOrder;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.GeneratedPropertyContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
@@ -38,7 +38,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 @SpringView(name = "team")
-@SideBarItem(sectionId = Sections.VIEWS, caption = "Team", order = 1)
+@SideBarItem(sectionId = Sections.VIEWS, captionCode = "team", order = 1)
 @FontAwesomeIcon(FontAwesome.LIST)
 public class TeamView extends VerticalLayout implements View {
 
@@ -58,17 +58,30 @@ public class TeamView extends VerticalLayout implements View {
 
 		BeanItemContainer<Player> container = new BeanItemContainer<Player>(Player.class,
 				this.playerService.getPlayers());
-		GeneratedPropertyContainer wrapperContainer = new GeneratedPropertyContainer(container);
-		wrapperContainer.removeContainerProperty("user");
-		wrapperContainer.removeContainerProperty("comment");
-		wrapperContainer.removeContainerProperty("birthdate");
-		wrapperContainer.removeContainerProperty("phone");
-		wrapperContainer.removeContainerProperty("email");
-		wrapperContainer.removeContainerProperty("height");
 
-		grid = new Grid();
-		grid.setContainerDataSource(wrapperContainer);
+		grid = new Grid(container);
+		grid.setColumns("number", "firstName", "lastName", "position", "position2", "role");
 		grid.setSelectionMode(SelectionMode.SINGLE);
+
+		grid.setSortOrder(Arrays.asList(new SortOrder("number", SortDirection.ASCENDING)));
+		grid.setWidth("100%");
+		grid.setHeight("100%");
+
+		Column col = grid.getColumn("firstName");
+		col.setHeaderCaption(I18n.t("player.firstName"));
+		col = grid.getColumn("lastName");
+		col.setHeaderCaption(I18n.t("player.lastName"));
+		col = grid.getColumn("number");
+		col.setWidth(110);
+		col.setHeaderCaption(I18n.t("player.number"));
+		col = grid.getColumn("position");
+		col.setWidth(135);
+		col.setHeaderCaption(I18n.t("player.position"));
+		col = grid.getColumn("position2");
+		col.setWidth(135);
+		col.setHeaderCaption(I18n.t("player.position2"));
+		col = grid.getColumn("role");
+		col.setHeaderCaption(I18n.t("player.role"));
 
 		grid.addSelectionListener(event -> {
 			event.getAdded().forEach((item -> {
@@ -78,7 +91,7 @@ public class TeamView extends VerticalLayout implements View {
 				grid.setDetailsVisible(item, false);
 			}));
 		});
-		
+
 		grid.setRowStyleGenerator(rowRef -> {
 			Player player = (Player) rowRef.getItemId();
 			if (BBPlay.currentUser().compareTo(player.getUser()) == 0) {
@@ -86,16 +99,6 @@ public class TeamView extends VerticalLayout implements View {
 			}
 			return null;
 		});
-
-		Column column = grid.getColumn("number");
-		column.setWidth(110);
-
-		column = grid.getColumn("position");
-		column.setWidth(135);
-
-		column = grid.getColumn("position2");
-		column.setHeaderCaption("2nd position");
-		column.setWidth(135);
 
 		grid.setDetailsGenerator(rowReference -> {
 			final Player bean = (Player) rowReference.getItemId();
@@ -107,12 +110,12 @@ public class TeamView extends VerticalLayout implements View {
 						Instant.ofEpochMilli(bean.getBirthdate().getTime())
 								.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now())
 						.getYears();
-				layout.addComponent(new Label("<strong>Age:</strong> " + yearsDelta,
-						ContentMode.HTML));
+				layout.addComponent(new Label("<strong>" + I18n.t("player.age") + ":</strong> "
+						+ yearsDelta, ContentMode.HTML));
 			}
 			if (bean.getHeight() != null && !bean.getHeight().equals(0)) {
-				layout.addComponent(new Label("<strong>Height:</strong> " + bean.getHeight()
-						+ " cm", ContentMode.HTML));
+				layout.addComponent(new Label("<strong>" + I18n.t("player.height") + ":</strong> "
+						+ bean.getHeight() + " cm", ContentMode.HTML));
 			}
 			StringBuilder sb = new StringBuilder();
 			if (bean.getEmail() != null && !bean.getEmail().isEmpty()) {
@@ -125,20 +128,21 @@ public class TeamView extends VerticalLayout implements View {
 				sb.append(bean.getPhone());
 			}
 			if (!sb.toString().isEmpty()) {
-				layout.addComponent(new Label("<strong>Contact:</strong> " + sb.toString(),
-						ContentMode.HTML));
+				layout.addComponent(new Label("<strong>" + I18n.t("player.contact") + ":</strong> "
+						+ sb.toString(), ContentMode.HTML));
 			}
 			if (bean.getComment() != null && !bean.getComment().isEmpty()) {
-				layout.addComponent(new Label("<strong>Comment:</strong> " + bean.getComment(),
-						ContentMode.HTML));
+				layout.addComponent(new Label("<strong>" + I18n.t("player.comment") + ":</strong> "
+						+ bean.getComment(), ContentMode.HTML));
 			}
 			HorizontalLayout buttons = new HorizontalLayout();
 			buttons.setSpacing(true);
 			if (SecurityUtil.isAdmin() || BBPlay.currentUser().compareTo(bean.getUser()) == 0) {
-				Button edit = new Button("Edit");
+				Button edit = new Button(I18n.t("edit"));
 				edit.addStyleName(ValoTheme.BUTTON_PRIMARY);
 				edit.addClickListener(event1 -> {
-					EditPlayerWindow editPlayerWindow = new EditPlayerWindow(playerService, bean, SecurityUtil.isAdmin());
+					EditPlayerWindow editPlayerWindow = new EditPlayerWindow(playerService, bean,
+							SecurityUtil.isAdmin());
 					editPlayerWindow.addCloseListener(e -> {
 						if (editPlayerWindow.getSavedModel() != null) {
 							refreshGrid();
@@ -149,15 +153,16 @@ public class TeamView extends VerticalLayout implements View {
 				buttons.addComponent(edit);
 			}
 			if (SecurityUtil.isAdmin()) {
-				Button remove = new Button("Remove");
+				Button remove = new Button(I18n.t("remove"));
 				remove.addClickListener(event2 -> {
-					ConfirmWindow.show("Confirm", null, "Are you sure?", result -> {
-						if (result) {
-							playerService.delete(bean);
-							container.removeItem(bean);
-							refreshGrid();
-						}
-					});
+					ConfirmWindow.show(I18n.t("confirm"), null, I18n.t("confirmQuestion"),
+							result -> {
+								if (result) {
+									playerService.delete(bean);
+									container.removeItem(bean);
+									refreshGrid();
+								}
+							});
 				});
 				buttons.addComponent(remove);
 			}
@@ -167,16 +172,11 @@ public class TeamView extends VerticalLayout implements View {
 			return layout;
 		});
 
-		grid.setColumnOrder("number");
-		grid.setSortOrder(Arrays.asList(new SortOrder("number", SortDirection.ASCENDING)));
-		grid.setWidth("100%");
-		grid.setHeight("100%");
-
 		addComponent(grid);
 		setExpandRatio(grid, 1);
 
 		if (SecurityUtil.isAdmin()) {
-			Button add = new Button("Add");
+			Button add = new Button(I18n.t("add"));
 			add.addStyleName(ValoTheme.BUTTON_PRIMARY);
 			add.addClickListener(event -> {
 				EditPlayerWindow editPlayerWindow = new EditPlayerWindow(playerService,

@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import pl.horuss.bbplay.web.model.User;
+import pl.horuss.bbplay.web.utils.I18n;
 
 import com.vaadin.server.Page;
 import com.vaadin.shared.Position;
@@ -36,7 +37,7 @@ public class BBPlay {
 	}
 
 	public static void info(String description) {
-		Notification notification = new Notification("Info", description,
+		Notification notification = new Notification(I18n.t("info"), description,
 				Notification.Type.HUMANIZED_MESSAGE);
 		notification.setPosition(Position.TOP_CENTER);
 		notification.setDelayMsec(2000);
@@ -44,7 +45,7 @@ public class BBPlay {
 	}
 
 	public static void error(String description) {
-		Notification notification = new Notification("Error", description,
+		Notification notification = new Notification(I18n.t("error"), description,
 				Notification.Type.ERROR_MESSAGE);
 		notification.setPosition(Position.TOP_CENTER);
 		notification.setDelayMsec(2000);

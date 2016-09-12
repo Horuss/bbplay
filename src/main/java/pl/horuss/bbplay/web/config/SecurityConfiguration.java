@@ -115,12 +115,5 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		PasswordEncoder encoder = new BCryptPasswordEncoder();
 		return encoder;
 	}
-	
-	// util for manually generating passwords
-	public static void main(String[] args) {
-		String password = "someNewPassword";
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		System.out.println(passwordEncoder.encode(password));
-	}
 
 }

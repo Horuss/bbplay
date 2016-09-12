@@ -20,6 +20,7 @@ import pl.horuss.bbplay.web.model.StepEntity;
 import pl.horuss.bbplay.web.parts.ConfirmWindow;
 import pl.horuss.bbplay.web.parts.EditPlayWindow;
 import pl.horuss.bbplay.web.services.PlaybookService;
+import pl.horuss.bbplay.web.utils.I18n;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,6 +37,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
@@ -44,7 +46,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 @Secured("ROLE_ADMIN")
 @SpringView(name = "playbook-edit")
-@SideBarItem(sectionId = Sections.VIEWS, caption = "Playbook Edit", order = 3)
+@SideBarItem(sectionId = Sections.VIEWS, captionCode = "playsEdit", order = 3)
 @FontAwesomeIcon(FontAwesome.PLAY_CIRCLE_O)
 public class PlaybookEditView extends VerticalLayout implements View {
 
@@ -95,6 +97,11 @@ public class PlaybookEditView extends VerticalLayout implements View {
 		gridPlays.setColumns("name", "call");
 		gridPlays.setSelectionMode(SelectionMode.SINGLE);
 
+		Column col = gridPlays.getColumn("name");
+		col.setHeaderCaption(I18n.t("plays.name"));
+		col = gridPlays.getColumn("call");
+		col.setHeaderCaption(I18n.t("plays.call"));
+
 		gridPlays.addItemClickListener(event -> {
 			if (event.isDoubleClick()) {
 				Play bean = (Play) event.getItemId();
@@ -110,7 +117,7 @@ public class PlaybookEditView extends VerticalLayout implements View {
 
 		HorizontalLayout playsButtons = new HorizontalLayout();
 		playsButtons.setSpacing(true);
-		Button addPlay = new Button("Add");
+		Button addPlay = new Button(I18n.t("add"));
 		addPlay.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		addPlay.addClickListener(event -> {
 			EditPlayWindow editPlayWindow = new EditPlayWindow(playbookService, new Play());
@@ -122,10 +129,10 @@ public class PlaybookEditView extends VerticalLayout implements View {
 			});
 			UI.getCurrent().addWindow(editPlayWindow);
 		});
-		Button removePlay = new Button("Remove");
+		Button removePlay = new Button(I18n.t("remove"));
 		removePlay.setEnabled(false);
 		removePlay.addClickListener(event -> {
-			ConfirmWindow.show("Confirm", null, "Are you sure?", result -> {
+			ConfirmWindow.show(I18n.t("confirm"), null, I18n.t("confirmQuestion"), result -> {
 				if (result) {
 					if (selectedPlay.isPersist()) {
 						playbookService.delete(selectedPlay);
@@ -147,7 +154,7 @@ public class PlaybookEditView extends VerticalLayout implements View {
 
 		HorizontalLayout stepsButtons = new HorizontalLayout();
 		stepsButtons.setSpacing(true);
-		Button addStep = new Button("Add");
+		Button addStep = new Button(I18n.t("add"));
 		addStep.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		addStep.addClickListener(event -> {
 			List<Step> steps = new ArrayList<Step>((Collection<? extends Step>) gridSteps
@@ -174,10 +181,10 @@ public class PlaybookEditView extends VerticalLayout implements View {
 			diagram.init(jsonSelectedPlay, true);
 			gridSteps.select(null);
 		});
-		Button removeStep = new Button("Remove");
+		Button removeStep = new Button(I18n.t("remove"));
 		removeStep.setEnabled(false);
 		removeStep.addClickListener(event -> {
-			ConfirmWindow.show("Confirm", null, "Are you sure?",
+			ConfirmWindow.show(I18n.t("confirm"), null, I18n.t("confirmQuestion"),
 					result -> {
 						if (result) {
 							Step bean = (Step) gridSteps.getSelectionModel().getSelectedRows()
@@ -203,6 +210,10 @@ public class PlaybookEditView extends VerticalLayout implements View {
 				gridSteps.setContainerDataSource(new BeanItemContainer<Step>(Step.class,
 						playbookService.getSteps(selectedPlay)));
 				gridSteps.setColumns("order", "desc");
+				Column column = gridSteps.getColumn("order");
+				column.setHeaderCaption(I18n.t("plays.stepOrder"));
+				column = gridSteps.getColumn("desc");
+				column.setHeaderCaption(I18n.t("plays.stepDescription"));
 				String jsonSelectedPlay = gson.toJson(selectedPlay);
 				diagram.init(jsonSelectedPlay, true);
 				stepsContainer.setVisible(true);
@@ -239,7 +250,7 @@ public class PlaybookEditView extends VerticalLayout implements View {
 
 		HorizontalLayout diagramButtons = new HorizontalLayout();
 		diagramButtons.setSpacing(true);
-		Button savePlayChanges = new Button("Save changes");
+		Button savePlayChanges = new Button(I18n.t("saveChanges"));
 		savePlayChanges.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		savePlayChanges.addClickListener(event -> {
 			List<Step> steps = new ArrayList<Step>((Collection<? extends Step>) gridSteps
@@ -260,7 +271,7 @@ public class PlaybookEditView extends VerticalLayout implements View {
 			playbookService.save(selectedPlay);
 			gridSteps.setContainerDataSource(new BeanItemContainer<Step>(Step.class, selectedPlay
 					.getSteps()));
-			BBPlay.info("Saved changes!");
+			BBPlay.info(I18n.t("saveOk"));
 		});
 		diagramButtons.addComponent(savePlayChanges);
 		right.addComponent(diagramButtons);
@@ -275,12 +286,12 @@ public class PlaybookEditView extends VerticalLayout implements View {
 		StepEntity newEntity = new StepEntity();
 		FieldGroup fieldGroup = new BeanFieldGroup<StepEntity>(StepEntity.class);
 		fieldGroup.setItemDataSource(new BeanItem<StepEntity>(newEntity));
-		addNewControls.addComponent(fieldGroup.buildAndBind("Label", "label"));
-		Field<?> typeField = fieldGroup.buildAndBind("Type", "type");
+		addNewControls.addComponent(fieldGroup.buildAndBind(I18n.t("stepEntity.label"), "label"));
+		Field<?> typeField = fieldGroup.buildAndBind(I18n.t("stepEntity.type"), "type");
 		typeField.setRequired(true);
 		addNewControls.addComponent(typeField);
 
-		Button addNew = new Button("Add new");
+		Button addNew = new Button(I18n.t("add"));
 		addNew.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		addNew.addClickListener(event -> {
 			try {
@@ -304,7 +315,7 @@ public class PlaybookEditView extends VerticalLayout implements View {
 				diagram.init(jsonSelectedPlay, true);
 				diagram.draw(selectedStep.getOrder() - 1);
 			} catch (CommitException e) {
-				BBPlay.error("Failed to add");
+				BBPlay.error(I18n.t("error"));
 			}
 
 		});

@@ -3,14 +3,16 @@ package pl.horuss.bbplay.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.vaadin.jouni.animator.AnimatorProxy;
+import org.vaadin.spring.i18n.I18N;
 import org.vaadin.spring.security.VaadinSecurity;
 import org.vaadin.spring.security.util.SecurityExceptionUtils;
 import org.vaadin.spring.sidebar.components.ValoSideBar;
 import org.vaadin.spring.sidebar.security.VaadinSecurityItemFilter;
 
 import pl.horuss.bbplay.web.parts.Footer;
-import pl.horuss.bbplay.web.views.AccessDeniedView;
-import pl.horuss.bbplay.web.views.ErrorView;
+import pl.horuss.bbplay.web.utils.I18n;
+import pl.horuss.bbplay.web.views.error.AccessDeniedView;
+import pl.horuss.bbplay.web.views.error.NavigatorErrorView;
 
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
@@ -23,7 +25,6 @@ import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
@@ -34,8 +35,8 @@ import com.vaadin.ui.VerticalLayout;
 public class MainUI extends UI {
 
 	private static final long serialVersionUID = -3538867580654293827L;
-	
-	private static AnimatorProxy animator;
+
+	private static AnimatorProxy animator = new AnimatorProxy();
 
 	@Autowired
 	ApplicationContext applicationContext;
@@ -48,13 +49,17 @@ public class MainUI extends UI {
 
 	@Autowired
 	ValoSideBar sideBar;
-	
+
+	@Autowired
+	I18N i18n;
+
 	public static AnimatorProxy animator() {
 		return animator;
 	}
 
 	@Override
 	protected void init(VaadinRequest request) {
+		I18n.init(i18n);
 		getPage().setTitle("BBPlay");
 		setErrorHandler(new DefaultErrorHandler() {
 			private static final long serialVersionUID = -18984634551415736L;
@@ -62,7 +67,7 @@ public class MainUI extends UI {
 			@Override
 			public void error(com.vaadin.server.ErrorEvent event) {
 				if (SecurityExceptionUtils.isAccessDeniedException(event.getThrowable())) {
-					Notification.show("Sorry, you don't have access to do that.");
+					BBPlay.error(I18n.t("error.noAccess", "MainUI"));
 				} else {
 					super.error(event);
 				}
@@ -88,12 +93,10 @@ public class MainUI extends UI {
 		Navigator navigator = new Navigator(this, viewContainer);
 		springViewProvider.setAccessDeniedViewClass(AccessDeniedView.class);
 		navigator.addProvider(springViewProvider);
-		navigator.setErrorView(ErrorView.class);
+		navigator.setErrorView(NavigatorErrorView.class);
 
 		Footer footer = new Footer();
 		layout.addComponent(footer);
-		
-		animator = new AnimatorProxy();
 		layout.addComponent(animator);
 
 		setContent(layout);

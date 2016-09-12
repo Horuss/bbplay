@@ -1,9 +1,13 @@
 package pl.horuss.bbplay.web;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
+import org.vaadin.spring.i18n.I18N;
 import org.vaadin.spring.security.shared.VaadinSharedSecurity;
+
+import pl.horuss.bbplay.web.utils.I18n;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.event.ShortcutAction;
@@ -14,7 +18,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -27,8 +30,13 @@ public class LoginUI extends UI {
 
 	private static final long serialVersionUID = -2647524179548770940L;
 
+	private static final Logger logger = LoggerFactory.getLogger(LoginUI.class);
+
 	@Autowired
 	VaadinSharedSecurity vaadinSecurity;
+
+	@Autowired
+	I18N i18n;
 
 	private TextField userName;
 
@@ -43,15 +51,16 @@ public class LoginUI extends UI {
 
 	@Override
 	protected void init(VaadinRequest request) {
+		I18n.init(i18n);
 		getPage().setTitle("BBPlay");
 
 		FormLayout loginForm = new FormLayout();
 		loginForm.setSizeUndefined();
 
-		userName = new TextField("Username");
-		passwordField = new PasswordField("Password");
-		rememberMe = new CheckBox("Remember me");
-		login = new Button("Login");
+		userName = new TextField(I18n.t("username"));
+		passwordField = new PasswordField(I18n.t("password"));
+		rememberMe = new CheckBox(I18n.t("rememberMe"));
+		login = new Button(I18n.t("login"));
 		loginForm.addComponent(userName);
 		loginForm.addComponent(passwordField);
 		loginForm.addComponent(rememberMe);
@@ -66,7 +75,7 @@ public class LoginUI extends UI {
 		loginLayout.setSizeUndefined();
 
 		if (request.getParameter("logout") != null) {
-			loggedOutLabel = new Label("You have been logged out!");
+			loggedOutLabel = new Label(I18n.t("loggedOut"));
 			loggedOutLabel.addStyleName(ValoTheme.LABEL_SUCCESS);
 			loggedOutLabel.setSizeUndefined();
 			loginLayout.addComponent(loggedOutLabel);
@@ -97,15 +106,14 @@ public class LoginUI extends UI {
 			userName.focus();
 			userName.selectAll();
 			passwordField.setValue("");
-			loginFailedLabel.setValue(String.format("Login failed: %s", ex.getMessage()));
+			loginFailedLabel.setValue(I18n.t("loginFailed"));
 			loginFailedLabel.setVisible(true);
 			if (loggedOutLabel != null) {
 				loggedOutLabel.setVisible(false);
 			}
 		} catch (Exception ex) {
-			Notification.show("An unexpected error occurred", ex.getMessage(),
-					Notification.Type.ERROR_MESSAGE);
-			LoggerFactory.getLogger(getClass()).error("Unexpected error while logging in", ex);
+			BBPlay.error(ex.getMessage());
+			logger.error("Unexpected error while logging in", ex);
 		} finally {
 			login.setEnabled(true);
 		}

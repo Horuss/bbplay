@@ -12,13 +12,14 @@ import org.springframework.stereotype.Service;
 import pl.horuss.bbplay.web.BBPlay;
 import pl.horuss.bbplay.web.dao.UserDao;
 import pl.horuss.bbplay.web.model.User;
+import pl.horuss.bbplay.web.utils.I18n;
 
 @Service
 public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserDao userDao;
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -35,11 +36,11 @@ public class UserService implements UserDetailsService {
 	public String changePassword(String currentPassword, String newPassword) {
 		User user = BBPlay.currentUser();
 		if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-			return "Current password invalid";
+			return I18n.t("wrongPassword");
 		}
 
 		if (!Pattern.compile("((?=.*\\d).{8,})").matcher(newPassword).matches()) {
-			return "Password must be at least 8 characters long and contain digit";
+			return I18n.t("wrongPasswordPattern");
 		}
 
 		user.setPassword(passwordEncoder.encode(newPassword));
