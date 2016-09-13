@@ -36,7 +36,7 @@ public class MainUI extends UI {
 
 	private static final long serialVersionUID = -3538867580654293827L;
 
-	private static AnimatorProxy animator = new AnimatorProxy();
+	private AnimatorProxy animator;
 
 	@Autowired
 	ApplicationContext applicationContext;
@@ -53,7 +53,7 @@ public class MainUI extends UI {
 	@Autowired
 	I18N i18n;
 
-	public static AnimatorProxy animator() {
+	public AnimatorProxy animator() {
 		return animator;
 	}
 
@@ -97,7 +97,7 @@ public class MainUI extends UI {
 
 		Footer footer = new Footer();
 		layout.addComponent(footer);
-		layout.addComponent(animator);
+		layout.addComponent(animator = new AnimatorProxy());
 
 		setContent(layout);
 	}

@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.ui.AbstractJavaScriptComponent;
+import com.vaadin.ui.UI;
 
 @JavaScript({ "d3.v4.min.4.2.2.js", "diagram_connector.js" })
 public class Diagram extends AbstractJavaScriptComponent {
@@ -39,8 +40,8 @@ public class Diagram extends AbstractJavaScriptComponent {
 					view.getStepDesc().setValue(
 							"<strong>" + I18n.t("plays.step") + " " + step + ":</strong><br/>"
 									+ desc);
-					MainUI.animator().animate(view.getStepDesc(), AnimType.FADE_IN)
-							.setDuration(400);
+					((MainUI) UI.getCurrent()).animator()
+							.animate(view.getStepDesc(), AnimType.FADE_IN).setDuration(400);
 					view.getStepsSlider().setValue((double) step);
 
 				});
