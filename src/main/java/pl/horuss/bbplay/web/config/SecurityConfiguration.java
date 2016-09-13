@@ -48,14 +48,12 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 		auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
 
-		// auth.inMemoryAuthentication().withUser("user").password("user").roles("USER").and()
-		// .withUser("admin").password("admin").roles("ADMIN");
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable(); // Use Vaadin's built-in CSRF protection instead
-		http.authorizeRequests().antMatchers("/login/**").anonymous()
+		http.authorizeRequests().antMatchers("/login/**").permitAll()
 				.antMatchers("/vaadinServlet/UIDL/**").permitAll()
 				.antMatchers("/vaadinServlet/HEARTBEAT/**").permitAll().anyRequest()
 				.authenticated();

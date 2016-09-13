@@ -3,7 +3,9 @@ package pl.horuss.bbplay.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.spring.i18n.I18N;
 import org.vaadin.spring.security.shared.VaadinSharedSecurity;
 
@@ -51,6 +53,11 @@ public class LoginUI extends UI {
 
 	@Override
 	protected void init(VaadinRequest request) {
+
+		if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+			getUI().getPage().setLocation("/#!");
+		}
+
 		I18n.init(i18n);
 		getPage().setTitle("BBPlay");
 
