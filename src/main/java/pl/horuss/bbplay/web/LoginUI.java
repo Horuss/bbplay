@@ -3,12 +3,14 @@ package pl.horuss.bbplay.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.spring.i18n.I18N;
 import org.vaadin.spring.security.shared.VaadinSharedSecurity;
 
+import pl.horuss.bbplay.web.parts.LanguageComboBox;
 import pl.horuss.bbplay.web.utils.I18n;
 
 import com.vaadin.annotations.Theme;
@@ -58,6 +60,7 @@ public class LoginUI extends UI {
 			getUI().getPage().setLocation("/#!");
 		}
 
+		getUI().setLocale(BBPlay.getLanguage(request.getHeader(HttpHeaders.ACCEPT_LANGUAGE)));
 		I18n.init(i18n);
 		getPage().setTitle("BBPlay");
 
@@ -70,6 +73,7 @@ public class LoginUI extends UI {
 		login = new Button(I18n.t("login"));
 		loginForm.addComponent(userName);
 		loginForm.addComponent(passwordField);
+		loginForm.addComponent(new LanguageComboBox(getUI().getLocale()));
 		loginForm.addComponent(rememberMe);
 		loginForm.addComponent(login);
 		login.addStyleName(ValoTheme.BUTTON_PRIMARY);

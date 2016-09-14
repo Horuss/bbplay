@@ -5,9 +5,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
+import javax.servlet.http.Cookie;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -16,6 +18,7 @@ import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import pl.horuss.bbplay.web.model.User;
+import pl.horuss.bbplay.web.utils.Cookies;
 import pl.horuss.bbplay.web.utils.I18n;
 
 import com.vaadin.server.Page;
@@ -26,6 +29,8 @@ import com.vaadin.ui.Notification;
 public class BBPlay {
 
 	public static void main(String[] args) {
+
+		Locale.setDefault(Locale.ENGLISH);
 
 		checkRequiredParameters("db.url", "db.username", "db.password");
 
@@ -79,6 +84,18 @@ public class BBPlay {
 			}
 			throw new IllegalArgumentException(sb.toString());
 		}
+	}
+
+	public static Locale getLanguage(String languageHeader) {
+		Cookie cookie = Cookies.getCookie("bbplay-lang");
+		if (cookie == null || cookie.getValue() == null || cookie.getValue().isEmpty()) {
+			cookie = Cookies.addCookie("bbplay-lang", new Locale(languageHeader).getLanguage());
+		}
+		return new Locale(cookie.getValue());
+	}
+
+	public static void setLanguage(String language) {
+		Cookies.addCookie("bbplay-lang", language);
 	}
 
 }
