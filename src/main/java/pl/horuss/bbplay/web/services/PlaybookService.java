@@ -28,6 +28,11 @@ public class PlaybookService {
 				Collectors.toList());
 	}
 
+	public List<Play> getPlaysPublished() {
+		return StreamSupport.stream(playDao.findByPublished(true).spliterator(), false).collect(
+				Collectors.toList());
+	}
+
 	public List<Step> getSteps(Play play) {
 		List<Step> collect = StreamSupport.stream(
 				stepDao.findAllByPlayWithEntities(play).spliterator(), false).collect(

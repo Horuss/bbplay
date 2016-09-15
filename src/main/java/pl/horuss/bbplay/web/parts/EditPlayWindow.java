@@ -54,6 +54,7 @@ public class EditPlayWindow extends Window {
 		Field<?> typeField = fieldGroup.buildAndBind(I18n.t("plays.type"), "type");
 		typeField.setRequired(true);
 		content.addComponent(typeField);
+		content.addComponent(fieldGroup.buildAndBind(I18n.t("plays.published"), "published"));
 
 		root.addComponent(content);
 

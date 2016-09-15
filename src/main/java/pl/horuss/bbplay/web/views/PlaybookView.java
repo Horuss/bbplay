@@ -12,6 +12,7 @@ import pl.horuss.bbplay.web.json.AnnotationExclusionStrategy;
 import pl.horuss.bbplay.web.model.Play;
 import pl.horuss.bbplay.web.services.PlaybookService;
 import pl.horuss.bbplay.web.utils.I18n;
+import pl.horuss.bbplay.web.utils.SecurityUtil;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -107,7 +108,8 @@ public class PlaybookView extends VerticalLayout implements View {
 		bottom.addComponent(stepDesc);
 
 		BeanItemContainer<Play> container = new BeanItemContainer<Play>(Play.class,
-				this.playbookService.getPlays());
+				SecurityUtil.isAdmin() ? this.playbookService.getPlays()
+						: this.playbookService.getPlaysPublished());
 
 		Grid grid = new Grid(container);
 		grid.setWidth("100%");

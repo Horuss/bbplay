@@ -29,6 +29,9 @@ public class Play {
 
 	@Column(name = "pl_type")
 	private PlayType type;
+	
+	@Column(name = "pl_published")
+	private boolean published;
 
 	@OneToMany(mappedBy = "play", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Step> steps;
@@ -77,6 +80,14 @@ public class Play {
 
 	public void setType(PlayType type) {
 		this.type = type;
+	}
+
+	public boolean isPublished() {
+		return published;
+	}
+
+	public void setPublished(boolean published) {
+		this.published = published;
 	}
 
 	public List<Step> getSteps() {
