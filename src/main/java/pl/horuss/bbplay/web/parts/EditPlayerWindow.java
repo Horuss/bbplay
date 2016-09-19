@@ -73,7 +73,7 @@ public class EditPlayerWindow extends Window {
 		
 		final FormLayout content2 = new FormLayout();
 		content2.addComponent(fieldGroup.buildAndBind(I18n.t("player.birthdate"), "birthdate"));
-		content2.addComponent(fieldGroup.buildAndBind(I18n.t("player.height"), "height"));
+		content2.addComponent(fieldGroup.buildAndBind(I18n.t("player.heightCm"), "height"));
 		content2.addComponent(fieldGroup.buildAndBind(I18n.t("player.email"), "email"));
 		content2.addComponent(fieldGroup.buildAndBind(I18n.t("player.phone"), "phone"));
 		content2.addComponent(fieldGroup.buildAndBind(I18n.t("player.comment"), "comment"));
