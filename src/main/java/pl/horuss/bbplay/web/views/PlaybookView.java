@@ -17,10 +17,12 @@ import pl.horuss.bbplay.web.utils.SecurityUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.sort.Sort;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
@@ -121,6 +123,8 @@ public class PlaybookView extends VerticalLayout implements View {
 		col.setHeaderCaption(I18n.t("plays.name"));
 		col = grid.getColumn("call");
 		col.setHeaderCaption(I18n.t("plays.call"));
+
+		grid.sort(Sort.by("call", SortDirection.ASCENDING));
 
 		grid.addSelectionListener(event -> {
 			Collection<Object> selectedRows = event.getSelected();

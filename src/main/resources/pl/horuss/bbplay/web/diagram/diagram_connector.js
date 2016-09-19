@@ -10,8 +10,8 @@ window.pl_horuss_bbplay_web_diagram_Diagram = function() {
 	var courtSizePx = {"OFFENSE" : [536, 500], "DEFENSE" : [536, 500],
 			"FULL_COURT" : [268, 500] }
 	
-	var colorFill = {"BALL" : "#FF8133", "PLAYER_1" : "#7DFF6B", "PLAYER_2" : "#8C80FF"};
-	var colorStroke = {"BALL" : "#FF6200", "PLAYER_1" : "#1EFF00", "PLAYER_2" : "#1900FF"};
+	var colorFill = {"BALL" : "#FF8133", "PLAYER_1" : "#7DFF6B", "PLAYER_2" : "#FF5050"};
+	var colorStroke = {"BALL" : "#FF6200", "PLAYER_1" : "#1EFF00", "PLAYER_2" : "#FF0000"};
 	var size = {"BALL" : 10, "PLAYER_1" : 14, "PLAYER_2" : 14};
 	
 	var drag = d3.drag()
