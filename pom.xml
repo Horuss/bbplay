@@ -43,6 +43,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<mainClass>pl.horuss.bbplay.web.BBPlay</mainClass>
 					<excludeDevtools>true</excludeDevtools>
 				</configuration>
 			</plugin>
