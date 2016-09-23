@@ -2,7 +2,6 @@ package pl.horuss.bbplay.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpHeaders;
 import org.vaadin.jouni.animator.AnimatorProxy;
 import org.vaadin.spring.i18n.I18N;
 import org.vaadin.spring.security.VaadinSecurity;
@@ -60,7 +59,7 @@ public class MainUI extends UI {
 
 	@Override
 	protected void init(VaadinRequest request) {
-		getUI().setLocale(BBPlay.getLanguage(request.getHeader(HttpHeaders.ACCEPT_LANGUAGE)));
+		getUI().setLocale(BBPlay.getLanguage(request.getLocale().getLanguage()));
 		I18n.init(i18n);
 		getPage().setTitle("BBPlay");
 		setErrorHandler(new DefaultErrorHandler() {

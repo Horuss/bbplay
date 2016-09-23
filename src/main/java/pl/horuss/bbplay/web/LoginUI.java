@@ -3,7 +3,6 @@ package pl.horuss.bbplay.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -60,7 +59,7 @@ public class LoginUI extends UI {
 			getUI().getPage().setLocation("/#!");
 		}
 
-		getUI().setLocale(BBPlay.getLanguage(request.getHeader(HttpHeaders.ACCEPT_LANGUAGE)));
+		getUI().setLocale(BBPlay.getLanguage(request.getLocale().getLanguage()));
 		I18n.init(i18n);
 		getPage().setTitle("BBPlay");
 
