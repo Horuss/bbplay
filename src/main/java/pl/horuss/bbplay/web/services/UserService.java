@@ -1,5 +1,6 @@
 package pl.horuss.bbplay.web.services;
 
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import pl.horuss.bbplay.web.BBPlay;
+import pl.horuss.bbplay.web.dao.PasswordResetDao;
 import pl.horuss.bbplay.web.dao.UserDao;
+import pl.horuss.bbplay.web.model.PasswordReset;
 import pl.horuss.bbplay.web.model.User;
 import pl.horuss.bbplay.web.utils.I18n;
 
@@ -19,6 +22,9 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserDao userDao;
+
+	@Autowired
+	private PasswordResetDao passwordResetDao;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -50,11 +56,32 @@ public class UserService implements UserDetailsService {
 	}
 
 	public User sendPasswordReset(String login) {
-		// TODO Auto-generated method stub
-		// 1. find by username & mail
-		// 2. generate link
-		// 3. send link with mail
-		return null;
+
+		User user = userDao.findByName(login);
+		if (user == null) {
+			user = userDao.findByEmail(login);
+		}
+		if (user == null) {
+			return null;
+		}
+
+		PasswordReset existingPasswordReset = null;
+		String link;
+		do {
+			existingPasswordReset = passwordResetDao
+					.findByLink(link = UUID.randomUUID().toString());
+		} while (existingPasswordReset != null);
+
+		passwordResetDao.removeByUser(user);
+
+		PasswordReset passwordReset = new PasswordReset();
+		passwordReset.setUser(user);
+		passwordReset.setLink(link);
+		passwordResetDao.save(passwordReset);
+
+		// TODO actually send mail with password reset link (+ create service...)
+
+		return user;
 	}
 
 }

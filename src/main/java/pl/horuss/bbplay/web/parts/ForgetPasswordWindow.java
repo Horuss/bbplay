@@ -67,6 +67,7 @@ public class ForgetPasswordWindow extends Window {
 			if (login.isValid()) {
 				User user = userService.sendPasswordReset(login.getValue().trim());
 				if (user != null) {
+					ForgetPasswordWindow.this.close();
 					BBPlay.info(I18n.t("forgetPassword.sent"));
 				} else {
 					BBPlay.error(I18n.t("forgetPassword.notExist"));

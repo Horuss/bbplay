@@ -11,4 +11,8 @@ public interface UserDao extends CrudRepository<User, Long> {
 	@Query(value = "SELECT u FROM User u LEFT JOIN FETCH u.roles where u.name = :name")
 	public User findByNameWithRoles(@Param("name") String name);
 
+	public User findByName(String name);
+
+	public User findByEmail(String email);
+
 }

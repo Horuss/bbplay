@@ -118,8 +118,9 @@ public class TeamView extends VerticalLayout implements View {
 						+ bean.getHeight() + " cm", ContentMode.HTML));
 			}
 			StringBuilder sb = new StringBuilder();
-			if (bean.getEmail() != null && !bean.getEmail().isEmpty()) {
-				sb.append(bean.getEmail());
+			if (bean.getUser() != null && bean.getUser().getEmail() != null
+					&& !bean.getUser().getEmail().isEmpty()) {
+				sb.append(bean.getUser().getEmail());
 			}
 			if (bean.getPhone() != null && !bean.getPhone().isEmpty()) {
 				if (!sb.toString().isEmpty()) {

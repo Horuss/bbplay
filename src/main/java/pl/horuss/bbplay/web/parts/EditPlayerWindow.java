@@ -16,6 +16,7 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
@@ -43,13 +44,13 @@ public class EditPlayerWindow extends Window {
 	private VerticalLayout windowContent(Player player, boolean admin) {
 		VerticalLayout root = new VerticalLayout();
 		root.setMargin(true);
-		
+
 		HorizontalLayout formsContainer = new HorizontalLayout();
 		formsContainer.setSpacing(true);
 
 		FieldGroup fieldGroup = new BeanFieldGroup<Player>(Player.class);
 		fieldGroup.setItemDataSource(new BeanItem<Player>(player));
-		
+
 		final FormLayout content1 = new FormLayout();
 		Field<?> buildAndBind = fieldGroup.buildAndBind(I18n.t("player.number"), "number");
 		buildAndBind.setEnabled(admin);
@@ -70,15 +71,18 @@ public class EditPlayerWindow extends Window {
 		buildAndBind.setEnabled(admin);
 		content1.addComponent(buildAndBind);
 		formsContainer.addComponent(content1);
-		
+
 		final FormLayout content2 = new FormLayout();
 		content2.addComponent(fieldGroup.buildAndBind(I18n.t("player.birthdate"), "birthdate"));
 		content2.addComponent(fieldGroup.buildAndBind(I18n.t("player.heightCm"), "height"));
-		content2.addComponent(fieldGroup.buildAndBind(I18n.t("player.email"), "email"));
+		TextField email = new TextField(I18n.t("player.email"), player.getUser() != null
+				&& player.getUser().getEmail() != null ? player.getUser().getEmail() : "");
+		email.setEnabled(false);
+		content2.addComponent(email);
 		content2.addComponent(fieldGroup.buildAndBind(I18n.t("player.phone"), "phone"));
 		content2.addComponent(fieldGroup.buildAndBind(I18n.t("player.comment"), "comment"));
 		formsContainer.addComponent(content2);
-		
+
 		root.addComponent(formsContainer);
 
 		HorizontalLayout footer = new HorizontalLayout();

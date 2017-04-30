@@ -31,6 +31,9 @@ public class User implements UserDetails, Comparable<User> {
 	@Column(name = "us_password")
 	private String password;
 
+	@Column(name = "us_email")
+	private String email;
+
 	@OneToMany(mappedBy = "user")
 	private List<UserRole> roles;
 
@@ -56,6 +59,14 @@ public class User implements UserDetails, Comparable<User> {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public List<UserRole> getRoles() {
