@@ -9,7 +9,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.vaadin.spring.i18n.I18N;
 import org.vaadin.spring.security.shared.VaadinSharedSecurity;
 
+import pl.horuss.bbplay.web.parts.ForgetPasswordWindow;
 import pl.horuss.bbplay.web.parts.LanguageComboBox;
+import pl.horuss.bbplay.web.services.UserService;
 import pl.horuss.bbplay.web.utils.I18n;
 
 import com.vaadin.annotations.Theme;
@@ -41,6 +43,9 @@ public class LoginUI extends UI {
 	@Autowired
 	I18N i18n;
 
+	@Autowired
+	private UserService userService;
+
 	private TextField userName;
 
 	private PasswordField passwordField;
@@ -48,6 +53,8 @@ public class LoginUI extends UI {
 	private CheckBox rememberMe;
 
 	private Button login;
+	
+	private Button forgetPassword;
 
 	private Label loginFailedLabel;
 	private Label loggedOutLabel;
@@ -70,11 +77,18 @@ public class LoginUI extends UI {
 		passwordField = new PasswordField(I18n.t("password"));
 		rememberMe = new CheckBox(I18n.t("rememberMe"));
 		login = new Button(I18n.t("login"));
+		forgetPassword = new Button(I18n.t("forgetPassword"));
+		
 		loginForm.addComponent(userName);
 		loginForm.addComponent(passwordField);
 		loginForm.addComponent(new LanguageComboBox(getUI().getLocale()));
 		loginForm.addComponent(rememberMe);
 		loginForm.addComponent(login);
+		loginForm.addComponent(forgetPassword);
+		
+		forgetPassword.addStyleName(ValoTheme.BUTTON_LINK);
+		forgetPassword.addClickListener(event -> UI.getCurrent().addWindow(new ForgetPasswordWindow(userService)));
+		
 		login.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		login.setDisableOnClick(true);
 		login.setClickShortcut(ShortcutAction.KeyCode.ENTER);

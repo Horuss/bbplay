@@ -49,4 +49,12 @@ public class UserService implements UserDetailsService {
 
 	}
 
+	public User sendPasswordReset(String login) {
+		// TODO Auto-generated method stub
+		// 1. find by username & mail
+		// 2. generate link
+		// 3. send link with mail
+		return null;
+	}
+
 }
