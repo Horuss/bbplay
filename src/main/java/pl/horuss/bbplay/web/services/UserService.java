@@ -1,9 +1,15 @@
 package pl.horuss.bbplay.web.services;
 
+import java.net.URI;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +23,8 @@ import pl.horuss.bbplay.web.model.PasswordReset;
 import pl.horuss.bbplay.web.model.User;
 import pl.horuss.bbplay.web.utils.I18n;
 
+import com.vaadin.ui.UI;
+
 @Service
 public class UserService implements UserDetailsService {
 
@@ -28,6 +36,9 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private JavaMailSender mailSender;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -55,13 +66,13 @@ public class UserService implements UserDetailsService {
 
 	}
 
-	public User sendPasswordReset(String login) {
+	public User sendPasswordReset(String login) throws MessagingException {
 
 		User user = userDao.findByName(login);
 		if (user == null) {
 			user = userDao.findByEmail(login);
 		}
-		if (user == null) {
+		if (user == null || user.getEmail() == null) {
 			return null;
 		}
 
@@ -79,9 +90,43 @@ public class UserService implements UserDetailsService {
 		passwordReset.setLink(link);
 		passwordResetDao.save(passwordReset);
 
-		// TODO actually send mail with password reset link (+ create service...)
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message);
 
+		helper.setTo(user.getEmail());
+		helper.setFrom("BBPlay <no_reply@bbplay>");
+		helper.setSubject(I18n.t("mail.passwordReset.subject"));
+		URI location = UI.getCurrent().getPage().getLocation();
+		String baseUrl = location.toString().substring(0,
+				location.toString().indexOf(location.getPath()));
+		helper.setText(I18n.t("mail.passwordReset.body", baseUrl + "/password?token=" + link), true);
+
+		mailSender.send(message);
 		return user;
+	}
+
+	public String resetPassword(User user, String password) {
+
+		user.setPassword(passwordEncoder.encode(password));
+		userDao.save(user);
+
+		passwordResetDao.removeByUser(user);
+
+		return null;
+
+	}
+
+	public User checkToken(String token) {
+		try {
+			UUID.fromString(token);
+		} catch (Exception ex) {
+			return null;
+		}
+		PasswordReset passwordReset = passwordResetDao.findByLink(token);
+		if (passwordReset == null) {
+			return null;
+		}
+		return passwordReset.getUser();
 	}
 
 }

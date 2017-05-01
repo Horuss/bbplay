@@ -56,8 +56,7 @@ public class LoginUI extends UI {
 	
 	private Button forgetPassword;
 
-	private Label loginFailedLabel;
-	private Label loggedOutLabel;
+	private Label msgLabel;
 
 	@Override
 	protected void init(VaadinRequest request) {
@@ -97,20 +96,23 @@ public class LoginUI extends UI {
 		VerticalLayout loginLayout = new VerticalLayout();
 		loginLayout.setSpacing(true);
 		loginLayout.setSizeUndefined();
+		
+		loginLayout.addComponent(msgLabel = new Label());
+		loginLayout.setComponentAlignment(msgLabel, Alignment.BOTTOM_CENTER);
+		msgLabel.setSizeUndefined();
+		msgLabel.setVisible(false);
 
 		if (request.getParameter("logout") != null) {
-			loggedOutLabel = new Label(I18n.t("loggedOut"));
-			loggedOutLabel.addStyleName(ValoTheme.LABEL_SUCCESS);
-			loggedOutLabel.setSizeUndefined();
-			loginLayout.addComponent(loggedOutLabel);
-			loginLayout.setComponentAlignment(loggedOutLabel, Alignment.BOTTOM_CENTER);
+			msgLabel.setValue(I18n.t("loggedOut"));
+			msgLabel.addStyleName(ValoTheme.LABEL_SUCCESS);
+			msgLabel.setVisible(true);
 		}
-
-		loginLayout.addComponent(loginFailedLabel = new Label());
-		loginLayout.setComponentAlignment(loginFailedLabel, Alignment.BOTTOM_CENTER);
-		loginFailedLabel.setSizeUndefined();
-		loginFailedLabel.addStyleName(ValoTheme.LABEL_FAILURE);
-		loginFailedLabel.setVisible(false);
+		
+		if (request.getParameter("changed") != null) {
+			msgLabel.setValue(I18n.t("changePassword.success"));
+			msgLabel.addStyleName(ValoTheme.LABEL_SUCCESS);
+			msgLabel.setVisible(true);
+		}
 
 		loginLayout.addComponent(loginForm);
 		loginLayout.setComponentAlignment(loginForm, Alignment.TOP_CENTER);
@@ -123,6 +125,7 @@ public class LoginUI extends UI {
 	}
 
 	private void login() {
+		login.setEnabled(false);
 		try {
 			vaadinSecurity.login(userName.getValue(), passwordField.getValue(),
 					rememberMe.getValue());
@@ -130,11 +133,9 @@ public class LoginUI extends UI {
 			userName.focus();
 			userName.selectAll();
 			passwordField.setValue("");
-			loginFailedLabel.setValue(I18n.t("loginFailed"));
-			loginFailedLabel.setVisible(true);
-			if (loggedOutLabel != null) {
-				loggedOutLabel.setVisible(false);
-			}
+			msgLabel.setValue(I18n.t("loginFailed"));
+			msgLabel.addStyleName(ValoTheme.LABEL_FAILURE);
+			msgLabel.setVisible(true);
 		} catch (Exception ex) {
 			BBPlay.error(ex.getMessage());
 			logger.error("Unexpected error while logging in", ex);

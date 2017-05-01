@@ -54,6 +54,7 @@ class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable(); // Use Vaadin's built-in CSRF protection instead
 		http.authorizeRequests().antMatchers("/login/**").permitAll()
+				.antMatchers("/password/**").permitAll()
 				.antMatchers("/vaadinServlet/UIDL/**").permitAll()
 				.antMatchers("/vaadinServlet/HEARTBEAT/**").permitAll().anyRequest()
 				.authenticated();

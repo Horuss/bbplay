@@ -1,10 +1,14 @@
 package pl.horuss.bbplay.web.parts;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pl.horuss.bbplay.web.BBPlay;
 import pl.horuss.bbplay.web.model.User;
 import pl.horuss.bbplay.web.services.UserService;
 import pl.horuss.bbplay.web.utils.I18n;
 
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -20,6 +24,8 @@ import com.vaadin.ui.themes.ValoTheme;
 public class ForgetPasswordWindow extends Window {
 
 	private static final long serialVersionUID = -5189811432322648592L;
+
+	private static final Logger logger = LoggerFactory.getLogger(ForgetPasswordWindow.class);
 
 	private UserService userService;
 
@@ -63,14 +69,25 @@ public class ForgetPasswordWindow extends Window {
 
 		Button ok = new Button(I18n.t("ok"));
 		ok.addStyleName(ValoTheme.BUTTON_PRIMARY);
+		ok.setClickShortcut(ShortcutAction.KeyCode.ENTER);
+		ok.setDisableOnClick(true);
 		ok.addClickListener(event -> {
 			if (login.isValid()) {
-				User user = userService.sendPasswordReset(login.getValue().trim());
-				if (user != null) {
-					ForgetPasswordWindow.this.close();
-					BBPlay.info(I18n.t("forgetPassword.sent"));
-				} else {
-					BBPlay.error(I18n.t("forgetPassword.notExist"));
+				ok.setEnabled(false);
+				User user;
+				try {
+					user = userService.sendPasswordReset(login.getValue().trim());
+					if (user != null) {
+						ForgetPasswordWindow.this.close();
+						BBPlay.info(I18n.t("forgetPassword.sent"));
+					} else {
+						BBPlay.error(I18n.t("forgetPassword.notExist"));
+					}
+				} catch (Exception ex) {
+					BBPlay.error(I18n.t("forgetPassword.error"));
+					logger.error("Unexpected error while sending password reset", ex);
+				} finally {
+					ok.setEnabled(true);
 				}
 			}
 		});
@@ -85,5 +102,4 @@ public class ForgetPasswordWindow extends Window {
 
 		return root;
 	}
-
 }
