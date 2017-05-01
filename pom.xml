@@ -11,7 +11,7 @@
 
 	<groupId>pl.horuss.bbplay</groupId>
 	<artifactId>bbplay-web</artifactId>
-	<version>0.2-SNAPSHOT</version>
+	<version>0.2</version>
 
 	<name>BBPlay Web</name>
 
