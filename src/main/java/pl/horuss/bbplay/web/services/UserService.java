@@ -8,6 +8,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,6 +40,9 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private JavaMailSender mailSender;
+	
+	@Value("${smtp.from:bbplay@bbplay.com}")
+	private String mailFrom;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -94,7 +98,7 @@ public class UserService implements UserDetailsService {
 		MimeMessageHelper helper = new MimeMessageHelper(message);
 
 		helper.setTo(user.getEmail());
-		helper.setFrom("BBPlay <no_reply@bbplay>");
+		helper.setFrom("BBPlay <" + mailFrom + ">");
 		helper.setSubject(I18n.t("mail.passwordReset.subject"));
 		URI location = UI.getCurrent().getPage().getLocation();
 		String baseUrl = location.toString().substring(0,

@@ -11,7 +11,7 @@
 
 	<groupId>pl.horuss.bbplay</groupId>
 	<artifactId>bbplay-web</artifactId>
-	<version>0.3</version>
+	<version>0.4</version>
 
 	<name>BBPlay Web</name>
 
@@ -19,6 +19,7 @@
 		<java.version>1.8</java.version>
 		<vaadin.version>7.6.8</vaadin.version>
 		<vaadin4spring.version>0.0.7.RELEASE</vaadin4spring.version>
+		<mysql.version>8.0.30</mysql.version>
 	</properties>
 
 	<build>
